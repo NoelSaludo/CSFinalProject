@@ -4,11 +4,15 @@
 ///		-Make sure na gumamit ng comments para laging informed kung para saan yung code pero wag naman po ispam
 ///		-Make it readable as much as possible
 ///		-Take it easy, kapag may di maayos na bug ay magpahinga ka po muna tsaka balikan
+///		-gagamit po tayo ng CamelCasing para sa local variable example int thisIsCamelCasing; 
+///		-PascalCasing naman po pagdating ng Class and Function names example
+///		class PascalCasing; or 
+///		void PascalCasing();
 /// 
 /// Ok yun lamang po at happy coding
 ///</summary>
 
-//linker to global header
+//links to global header
 #include "GlobalHeader.h"
 
 using namespace std;
