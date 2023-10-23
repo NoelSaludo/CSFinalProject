@@ -14,13 +14,13 @@
 
 //links to global header
 #include "GlobalHeader.h"
-
+//CarbonDataObject for saving data in the future
+#include "CarbonData.h"
 using namespace std;
 
 int main()
 {
-	//Hello World
-	cout << "Hello World!";
+	CarbonData carbonData;
 	cin.get();
 	return 0;
 }
