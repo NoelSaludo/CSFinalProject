@@ -18,8 +18,8 @@
 using namespace std;
 
 int main()
-{
-	cout << "Hello World!";
+{ /// Saludo solos all
+	cout << "goodbye World!";
 	cin.get();
 	return 0;
 }
