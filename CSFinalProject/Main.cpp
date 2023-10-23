@@ -19,7 +19,7 @@ using namespace std;
 
 int main()
 {
-	//hello
+	//Coding is Fun and Painful lol
 	cout << "Hello World!";
 	cin.get();
 	return 0;
