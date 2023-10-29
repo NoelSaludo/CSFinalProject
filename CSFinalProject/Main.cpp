@@ -18,7 +18,7 @@ void TotalCarbonFootprint()
 
 int main()
 {
-	//
+	//use input in every function
 	double input,
 		electricEmission,
 		gasEmission,
@@ -30,11 +30,10 @@ int main()
 		doesUserRecycleAluminum;
 	//request for the user input
 	cout << "CarbonFootprin Calculator\n";
-	cin >> input;
 	cout << "Enter Electric Bill\n";
+	cin >> input;
 	electricEmission = ElectricEmission(input);
-	//logs electricEmission
-	cout << " Output " << electricEmission;
+	cout << " Output " << electricEmission; //logs the Outpput for testing
 
 	cin.get();
 	return 0;
