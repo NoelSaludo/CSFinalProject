@@ -1,26 +1,27 @@
-///<summary>
-/// Ito po yung repository ng ating Final Project para sa CS
-/// Notes para sa paggawa ng ating project:
-///		-Make sure na gumamit ng comments para laging informed kung para saan yung code pero wag naman po ispam
-///		-Make it readable as much as possible
-///		-Take it easy, kapag may di maayos na bug ay magpahinga ka po muna tsaka balikan
-///		-gagamit po tayo ng CamelCasing para sa local variable example int thisIsCamelCasing; 
-///		-PascalCasing naman po pagdating ng Class and Function names example
-///		class PascalCasing; or 
-///		void PascalCasing();
-/// 
-/// Ok yun lamang po at happy coding
-///</summary>
+#include <iostream>
+#include <conio.h>
 
-//links to global header
-#include "GlobalHeader.h"
-//CarbonDataObject for saving data in the future
-#include "CarbonData.h"
 using namespace std;
+
+void ElectricEmission()
+{
+	//Enter calculation for ElectricEmission
+}
+//add more calculations
+//remember that we are going to also check which emission causes the high emission 
+//so we can create a custom suggestion based on the calculation
 
 int main()
 {
-	CarbonData carbonData;
+	double electricBill,
+		gasBill,
+		oilBill,
+		carMileage;
+	int flightsOverFourHours,
+		flightsUnderFourHours;
+	bool doesUserRecycleNewspaper,
+		doesUserRecycleAluminum;
+	//request for the user input
 	cin.get();
 	return 0;
 }
