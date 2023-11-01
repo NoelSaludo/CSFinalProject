@@ -1,11 +1,12 @@
 #include <iostream>
 #include <conio.h>
+#include <fmt/core.h>
 
 using namespace std;
 
 double ElectricEmission(double electricBill)
 {
-	return (electricBill / 56.98) * 105;
+	return floor((electricBill / 56.98) * 105);
 }
 //add more calculations
 //remember that we are going to also check which emission causes the high emission 
@@ -33,7 +34,7 @@ int main()
 	cout << "Enter Electric Bill\n";
 	cin >> input;
 	electricEmission = ElectricEmission(input);
-	cout << " Output " << electricEmission; //logs the Outpput for testing
+	fmt::print("Output: {0}", electricEmission); //logs the Outpput for testing
 
 	cin.get();
 	return 0;
