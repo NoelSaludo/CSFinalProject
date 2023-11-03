@@ -58,7 +58,7 @@ public:
 		double input;
 		CarbonData data;
 
-		std::cout << "CarbonFootprin Calculator\n";
+		std::cout << "CarbonFootprint Calculator\n";
 		std::cout << "Enter Electric Bill\n";
 		std::cin >> input;
 		data.electricEmission = ElectricEmission(input);
