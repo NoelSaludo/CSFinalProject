@@ -52,6 +52,10 @@ public:
 	{
 
 	}
+	void Suggestion()
+	{
+		
+	}
 	void Main()
 	{
 		//use input in every function
