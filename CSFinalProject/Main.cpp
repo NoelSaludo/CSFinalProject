@@ -12,6 +12,7 @@ public:
 		flightsUnderFourHours;
 	bool doesUserRecycleNewspaper,
 		doesUserRecycleAluminum;
+
 };
 class Program
 {
