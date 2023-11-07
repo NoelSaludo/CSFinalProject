@@ -59,6 +59,7 @@ class Program
 	void SuggestionFunction(){}
 	
 public:
+
 	void Main()
 	{
 		//use input in every function
