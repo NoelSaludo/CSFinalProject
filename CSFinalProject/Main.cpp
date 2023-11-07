@@ -40,7 +40,19 @@ public:
 class Program
 {
 	//Enter some functions below
-	void CalculateEnergyEmission(){}
+	void CalculateEnergyEmission(CarbonData &data){
+		char input;
+		double energy_emission;
+		int number_of_appliances;
+		std::cout << "Do you own a television (Y/n)";
+		std::cin >> input;
+		if (input == 'Y') {
+			std::cout << "How many?";
+			std::cin >> number_of_appliances;
+			energy_emission = number_of_appliances * 8.91;
+		}
+
+	}
 	void CalculateTransportEmission(){}
 	void CalculateWasteEmission(){}
 	void CalculateTotalEmission(){}
@@ -55,9 +67,6 @@ public:
 		CarbonData data;
 
 		std::cout << "CarbonFootprint Calculator\n";
-		std::cout << "Enter Electric Bill\n";
-		std::cin >> input;
-		data.set_energy_emission(input);//logs the Outpput for testing
 	}
 };
 

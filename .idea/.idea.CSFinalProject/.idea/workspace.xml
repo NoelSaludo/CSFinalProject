@@ -4,10 +4,7 @@
     <projectFile>CSFinalProject/CSFinalProject.vcxproj</projectFile>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="56a82aef-971a-4d26-a9a7-34306e985f92" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.CSFinalProject/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CSFinalProject/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CSFinalProject/Main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/CSFinalProject/Main.cpp" afterDir="false" />
-    </list>
+    <list default="true" id="56a82aef-971a-4d26-a9a7-34306e985f92" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -43,6 +40,14 @@
       <updated>1699275614441</updated>
       <workItem from="1699275614443" duration="38000" />
     </task>
+    <task id="LOCAL-00001" summary="New Functions">
+      <created>1699329045746</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1699329045746</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="UnityCheckinConfiguration" checkUnsavedScenes="true" />
@@ -60,5 +65,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+    <MESSAGE value="New Functions" />
+    <option name="LAST_COMMIT_MESSAGE" value="New Functions" />
   </component>
 </project>
