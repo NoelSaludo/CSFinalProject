@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fmt/format.h>
+#include <cmath>
 
 class CarbonData 
 {
@@ -48,7 +49,7 @@ class Program
 		std::cin >> KWH;
 		KWH = KWH * 0.6032;
 		data.set_energy_emission(KWH);
-		std::cout << fmt::format("\t{}kg per Month",data.energy_emission());
+		std::cout << fmt::format("\t{}kg of CO2 per Month",data.energy_emission());
 	}
 	void CalculateTransportEmission(){}
 	void CalculateWasteEmission(){}
