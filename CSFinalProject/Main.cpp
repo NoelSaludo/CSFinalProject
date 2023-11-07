@@ -3,59 +3,51 @@
 
 class CarbonData 
 {
+	double _energy_emission,
+	       _transport_emission,
+	       _waste_emission;
 public:
-	double electricEmission,
-		gasEmission,
-		oilEmission,
-		carEmission;
-	int flightsOverFourHours,
-		flightsUnderFourHours;
-	bool doesUserRecycleNewspaper,
-		doesUserRecycleAluminum;
+	double energy_emission() const
+	{
+		return _energy_emission;
+	}
+
+	void set_energy_emission(double energy_emission)
+	{
+		this->_energy_emission = energy_emission;
+	}
+
+	double transport_emission1() const
+	{
+		return _transport_emission;
+	}
+
+	void set_transport_emission(double transport_emission)
+	{
+		this->_transport_emission = transport_emission;
+	}
+
+	double waste_emission1() const
+	{
+		return _waste_emission;
+	}
+
+	void set_waste_emission(double waste_emission)
+	{
+		this->_waste_emission = waste_emission;
+	}
 };
 class Program
 {
+	//Enter some functions below
+	void CalculateEnergyEmission(){}
+	void CalculateTransportEmission(){}
+	void CalculateWasteEmission(){}
+	void CalculateTotalEmission(){}
+	void SuggestionFunction(){}
+	
 public:
-	double ElectricEmission(double ElectricBill)
-	{
-		return floor((ElectricBill / 56.98) * 105);
-	}
-	double GasEmission(double GasBill)
-	{
 
-	}
-	double OilEmission(double OilBill)
-	{
-
-	}
-	double CarEmission(double CarBill)
-	{
-
-	}
-	int FlightsOverFourHours(int numberOfFlights)
-	{
-
-	}
-	int FlightsUnderFourHours(double numberOfFlights)
-	{
-
-	}
-	int DoesUserRecycleNewspaper(bool recycles)
-	{
-
-	}
-	int DoesUserRecycleAluminum(bool recycles)
-	{
-
-	}
-	void TotalEmission()
-	{
-
-	}
-	void Suggestion()
-	{
-		
-	}
 	void Main()
 	{
 		//use input in every function
@@ -65,8 +57,7 @@ public:
 		std::cout << "CarbonFootprint Calculator\n";
 		std::cout << "Enter Electric Bill\n";
 		std::cin >> input;
-		data.electricEmission = ElectricEmission(input);
-		fmt::print("Output: {0}", data.electricEmission); //logs the Outpput for testing
+		data.set_energy_emission(input);//logs the Outpput for testing
 	}
 };
 
