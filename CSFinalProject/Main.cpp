@@ -1,5 +1,5 @@
 #include <iostream>
-#include <fmt/core.h>
+#include <fmt/format.h>
 
 class CarbonData 
 {
@@ -67,8 +67,6 @@ public:
 		CarbonData data;
 
 		std::cout << "CarbonFootprint Calculator\n";
-		std::cout << fmt::format("Hello {1} {0}", 0, 3);
-		
 	}
 };
 
