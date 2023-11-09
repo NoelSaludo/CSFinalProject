@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fmt/format.h>
+#include <cmath>
 
 class CarbonData 
 {
@@ -41,17 +42,14 @@ class Program
 {
 	//Enter some functions below
 	void CalculateEnergyEmission(CarbonData &data){
-		char input;
-		double energy_emission;
-		int number_of_appliances;
-		std::cout << "Do you own a television (Y/n)";
-		std::cin >> input;
-		if (input == 'Y') {
-			std::cout << "How many?";
-			std::cin >> number_of_appliances;
-			energy_emission = number_of_appliances * 8.91;
-		}
-
+		double KWH;
+		std::cout << "Energy Emission\n";
+		std::cout << "---------------------------------------------\n";
+		std::cout << "Please check your Electricity Bill and find KWH used\nEnter KWH : ";
+		std::cin >> KWH;
+		KWH = KWH * 0.6032;
+		data.set_energy_emission(KWH);
+		std::cout << fmt::format("{}kg of CO2 per Month",data.energy_emission());
 	}
 	void CalculateTransportEmission(){}
 	void CalculateWasteEmission(){}
@@ -66,7 +64,8 @@ public:
 		double input;
 		CarbonData data;
 
-		std::cout << "CarbonFootprint Calculator\n";
+		std::cout << "CarbonFootprint Calculator\n------------------------------------------\n";
+		CalculateEnergyEmission(data);
 	}
 };
 
