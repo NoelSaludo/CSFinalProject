@@ -20,54 +20,14 @@ class Program
 		std::cout << std::endl;
 		return 0;
 	}
-	void create_table(sqlite3* db, const char* sql, char* zErrMsg) {
+	void Execute(sqlite3* db, const char* sql, char* zErrMsg) {
 		int rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
 		if (rc != SQLITE_OK) {
 			std::cerr << "SQL error: " << zErrMsg << std::endl;
 			sqlite3_free(zErrMsg);
 		}
 		else {
-			std::cout << "Table created successfully" << std::endl;
-		}
-	}
-	void insert_records(sqlite3* db, const char* sql, char* zErrMsg) {
-		int rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
-		if (rc != SQLITE_OK) {
-			std::cerr << "SQL error: " << zErrMsg << std::endl;
-			sqlite3_free(zErrMsg);
-		}
-		else {
-			std::cout << "Records inserted successfully" << std::endl;
-		}
-	}
-	void read_records(sqlite3* db, const char* sql, char* zErrMsg) {
-		int rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
-		if (rc != SQLITE_OK) {
-			std::cerr << "SQL error: " << zErrMsg << std::endl;
-			sqlite3_free(zErrMsg);
-		}
-		else {
-			std::cout << "Records read successfully" << std::endl;
-		}
-	}
-	void update_record(sqlite3* db, const char* sql, char* zErrMsg) {
-		int rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
-		if (rc != SQLITE_OK) {
-			std::cerr << "SQL error: " << zErrMsg << std::endl;
-			sqlite3_free(zErrMsg);
-		}
-		else {
-			std::cout << "Record updated successfully" << std::endl;
-		}
-	}
-	void delete_record(sqlite3* db, const char* sql, char* zErrMsg) {
-		int rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
-		if (rc != SQLITE_OK) {
-			std::cerr << "SQL error: " << zErrMsg << std::endl;
-			sqlite3_free(zErrMsg);
-		}
-		else {
-			std::cout << "Record deleted successfully" << std::endl;
+			std::cout << "Execution Success" << std::endl;
 		}
 	}
 	//Enter some functions below
@@ -109,38 +69,32 @@ public:
 			return (0);
 		}
 		sql = "CREATE TABLE IF NOT EXISTS carbondata(" \
-			"id INTEGER PRIMARY KEY," \
+			"id INTEGER PRIMARY KEY AUTOINCREMENT," \
 			"energy_emission DOUBLE," \
 			"gas_emission DOUBLE," \
 			"waste_emission DOUBLE);";
 
-		create_table(db, sql, zErrMsg);
+		Execute(db, sql, zErrMsg);
 		data.energy_emission = 13.32;
-		data.id = 1;
 		data.transport_emission = 13.31;
 		data.waste_emission = 14.14;
-		sql = "INSERT INTO carbondata VALUEs (?, ?, ?, ?);";
+		sql = "INSERT INTO carbondata (energy_emission, gas_emission, waste_emission) VALUEs ( ?, ?, ?);";
 		rc = sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
 		if (rc != SQLITE_OK) {
 			std::cerr << "SQL error: " << sqlite3_errmsg(db) << std::endl;
 			return(-1);
 		}
-		rc = sqlite3_bind_int(stmt, 1, data.id); // bind the id value to the first placeholder
+		rc = sqlite3_bind_double(stmt, 1, data.energy_emission); // bind the name value to the second placeholder
 		if (rc != SQLITE_OK) {
 			std::cerr << "SQL error: " << sqlite3_errmsg(db) << std::endl;
 			return(-1);
 		}
-		rc = sqlite3_bind_double(stmt, 2, data.energy_emission); // bind the name value to the second placeholder
+		rc = sqlite3_bind_double(stmt, 2, data.energy_emission); // bind the age value to the third placeholder
 		if (rc != SQLITE_OK) {
 			std::cerr << "SQL error: " << sqlite3_errmsg(db) << std::endl;
 			return(-1);
 		}
-		rc = sqlite3_bind_double(stmt, 3, data.energy_emission); // bind the age value to the third placeholder
-		if (rc != SQLITE_OK) {
-			std::cerr << "SQL error: " << sqlite3_errmsg(db) << std::endl;
-			return(-1);
-		}
-		rc = sqlite3_bind_double(stmt, 4, data.waste_emission); // bind the email value to the fourth placeholder
+		rc = sqlite3_bind_double(stmt, 3, data.waste_emission); // bind the email value to the fourth placeholder
 		if (rc != SQLITE_OK) {
 			std::cerr << "SQL error: " << sqlite3_errmsg(db) << std::endl;
 			return(-1);
@@ -156,7 +110,7 @@ public:
 		sqlite3_finalize(stmt);
 
 		sql = "SELECT * FROM carbondata;";
-		read_records(db, sql, zErrMsg);
+		Execute(db, sql, zErrMsg);
 		return 0;
 			
 
