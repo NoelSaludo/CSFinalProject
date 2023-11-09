@@ -8,7 +8,8 @@ public:
 	int id;
 	double energy_emission,
 	       transport_emission,
-	       waste_emission;
+	       waste_emission,
+          total_emission;
 };
 class Program
 {
@@ -40,17 +41,6 @@ class Program
 {
 	//Enter some functions below
 	void CalculateEnergyEmission(CarbonData &data){
-		char input;
-		double energy_emission;
-		int number_of_appliances;
-		std::cout << "Do you own a television (Y/n)";
-		std::cin >> input;
-		if (input == 'Y') {
-			std::cout << "How many?";
-			std::cin >> number_of_appliances;
-			energy_emission = number_of_appliances * 8.91;
-		}
-
 		double KWH;
 		std::cout << "Energy Emission\n";
 		std::cout << "---------------------------------------------\n";
@@ -59,6 +49,7 @@ class Program
 		KWH = KWH * 0.6032;
 		data.energy_emission = KWH;
 		std::cout << fmt::format("{}kg of CO2 per Month",data.energy_emission);
+
 	}
 	void CalculateTransportEmission(){}
 	void CalculateWasteEmission(){}
@@ -78,7 +69,11 @@ public:
 		int rc;
 		const char* sql;
 		sqlite3_stmt* stmt;
-		
+    
+		std::cout << "CarbonFootprint Calculator\n------------------------------------------\n";
+		CalculateEnergyEmission(data);
+    
+    
 		rc = sqlite3_open("calculator.db", &db);
 		if (rc) {
 			std::cerr << "Can't open database: " << sqlite3_errmsg(db) << std::endl;
@@ -127,17 +122,12 @@ public:
 
 		sql = "SELECT * FROM carbondata;";
 		Execute(db, sql, zErrMsg);
-		return 0;
-			
-
-		std::cout << "CarbonFootprint Calculator\n";
-		return 0;
+    return 0;
 	}
 };
 
 int main()
 {
-	using namespace fmt;
 	Program program;
 	program.Main();
 	return 0;
