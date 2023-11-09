@@ -8,7 +8,8 @@ public:
 	int id;
 	double energy_emission,
 	       transport_emission,
-	       waste_emission;
+	       waste_emission,
+			totalemission;
 };
 class Program
 {
@@ -30,27 +31,8 @@ class Program
 			std::cout << "Execution Success" << std::endl;
 		}
 	}
-	double energy_emission,
-	       transport_emission,
-	       waste_emission,
-		   total_emission;
-
-};
-class Program
-{
 	//Enter some functions below
 	void CalculateEnergyEmission(CarbonData &data){
-		char input;
-		double energy_emission;
-		int number_of_appliances;
-		std::cout << "Do you own a television (Y/n)";
-		std::cin >> input;
-		if (input == 'Y') {
-			std::cout << "How many?";
-			std::cin >> number_of_appliances;
-			energy_emission = number_of_appliances * 8.91;
-		}
-
 		double KWH;
 		std::cout << "Energy Emission\n";
 		std::cout << "---------------------------------------------\n";
@@ -78,7 +60,11 @@ public:
 		int rc;
 		const char* sql;
 		sqlite3_stmt* stmt;
-		
+			
+
+		std::cout << "CarbonFootprint Calculator\n";
+		CalculateEnergyEmission(data);
+
 		rc = sqlite3_open("calculator.db", &db);
 		if (rc) {
 			std::cerr << "Can't open database: " << sqlite3_errmsg(db) << std::endl;
@@ -86,36 +72,39 @@ public:
 		}
 		sql = "CREATE TABLE IF NOT EXISTS carbondata(" \
 			"id INTEGER PRIMARY KEY AUTOINCREMENT," \
-			"energy_emission DOUBLE," \
-			"gas_emission DOUBLE," \
-			"waste_emission DOUBLE);";
+			"energy_emission DOUBLE NOT NULL," \
+			"gas_emission DOUBLE NOT NULL," \
+			"waste_emission DOUBLE NOT NULL,"\
+			"total_emission DOUBLE NOT NULL);";
 
 		Execute(db, sql, zErrMsg);
-		data.energy_emission = 13.32;
-		data.transport_emission = 13.31;
-		data.waste_emission = 14.14;
-		sql = "INSERT INTO carbondata (energy_emission, gas_emission, waste_emission) VALUEs ( ?, ?, ?);";
+		sql = "INSERT INTO carbondata (energy_emission, gas_emission, waste_emission, total_emission) VALUEs ( ?, ?, ?, ?);";
 		rc = sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
 		if (rc != SQLITE_OK) {
 			std::cerr << "SQL error: " << sqlite3_errmsg(db) << std::endl;
 			return(-1);
 		}
-		rc = sqlite3_bind_double(stmt, 1, data.energy_emission); // bind the name value to the second placeholder
+		rc = sqlite3_bind_double(stmt, 1, data.energy_emission); 
 		if (rc != SQLITE_OK) {
 			std::cerr << "SQL error: " << sqlite3_errmsg(db) << std::endl;
 			return(-1);
 		}
-		rc = sqlite3_bind_double(stmt, 2, data.energy_emission); // bind the age value to the third placeholder
+		rc = sqlite3_bind_double(stmt, 2, data.energy_emission); 
 		if (rc != SQLITE_OK) {
 			std::cerr << "SQL error: " << sqlite3_errmsg(db) << std::endl;
 			return(-1);
 		}
-		rc = sqlite3_bind_double(stmt, 3, data.waste_emission); // bind the email value to the fourth placeholder
+		rc = sqlite3_bind_double(stmt, 3, data.waste_emission); 
 		if (rc != SQLITE_OK) {
 			std::cerr << "SQL error: " << sqlite3_errmsg(db) << std::endl;
 			return(-1);
 		}
-		rc = sqlite3_step(stmt); // execute the statement and check for errors
+		rc = sqlite3_bind_double(stmt, 4, data.totalemission);
+		if (rc != SQLITE_OK) {
+			std::cerr << "SQL error: " << sqlite3_errmsg(db) << std::endl;
+			return(-1);
+		}
+		rc = sqlite3_step(stmt); 
 		if (rc != SQLITE_DONE) {
 			std::cerr << "SQL error: " << sqlite3_errmsg(db) << std::endl;
 			return(-1);
@@ -127,10 +116,6 @@ public:
 
 		sql = "SELECT * FROM carbondata;";
 		Execute(db, sql, zErrMsg);
-		return 0;
-			
-
-		std::cout << "CarbonFootprint Calculator\n";
 		return 0;
 	}
 };
