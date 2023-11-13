@@ -5,7 +5,6 @@
 class CarbonData 
 {
 public:
-	int id;
 	double energy_emission,
 	       transport_emission,
 	       waste_emission,
@@ -42,18 +41,16 @@ class Program
 		data.energy_emission = KWH;
 		std::cout << fmt::format("{}kg of CO2 per Month",data.energy_emission);
 	}
-	void CalculateTransportEmission(){}
-	void CalculateWasteEmission(){}
-	void CalculateTotalEmission(){}
-	void SuggestionFunction(){}
+	void CalculateTransportEmission(CarbonData& data){}
+	void CalculateWasteEmission(CarbonData& data){}
+	void CalculateTotalEmission(CarbonData& data){}
+	void SuggestionFunction(CarbonData& data){}
 
 	
 public:
 
 	int Main()
 	{
-		//use input in every function
-		double input;
 		CarbonData data;
 		sqlite3* db;
 		char* zErrMsg = 0;
@@ -64,6 +61,9 @@ public:
 
 		std::cout << "CarbonFootprint Calculator\n";
 		CalculateEnergyEmission(data);
+		CalculateTransportEmission(data);
+		CalculateWasteEmission(data);
+		SuggestionFunction(data);
 
 
 		//do not touch please
