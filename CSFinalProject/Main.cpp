@@ -2,6 +2,7 @@
 #include <string>
 #include <fmt/format.h>
 #include <sqlite3.h>
+#include <ctime>
 class CarbonData 
 {
 public:
@@ -9,6 +10,8 @@ public:
 	       transport_emission,
 	       waste_emission,
 			totalemission;
+	std::string suggestion;
+	time_t Date = time(0);
 };
 class Program
 {
@@ -44,7 +47,48 @@ class Program
 	void CalculateTransportEmission(CarbonData& data){}
 	void CalculateWasteEmission(CarbonData& data){}
 	void CalculateTotalEmission(CarbonData& data){}
-	void SuggestionFunction(CarbonData& data){}
+	void SuggestionFunction(CarbonData& data)
+	{
+		double average_threshold = 201.58, bad_threshold = 277.19;
+		std::string Suggestion = "Suggestion to reduce your monthly carbon emission:\n";
+		if (data.energy_emission > bad_threshold){
+			Suggestion += "";//5 suggestion
+		}
+		else if(data.energy_emission > average_threshold){
+
+			Suggestion += "";//3 suggestion
+		}
+		else {
+
+			Suggestion += "";//1 suggestion
+		}
+		if (data.transport_emission > bad_threshold) {
+
+			Suggestion += "";//same here
+		}
+		else if (data.transport_emission > average_threshold) {
+
+			Suggestion += "";//same here
+		}
+		else {
+
+			Suggestion += "";//same here
+		}
+		if (data.waste_emission > bad_threshold) {
+
+			Suggestion += "";//same here
+		}
+		else if (data.waste_emission > average_threshold) {
+
+			Suggestion += "";//same here
+		}
+		else {
+
+			Suggestion += "";//same here
+		}
+
+		data.suggestion = Suggestion;
+	}
 
 	
 public:
@@ -72,15 +116,17 @@ public:
 			std::cerr << "Can't open database: " << sqlite3_errmsg(db) << std::endl;
 			return (0);
 		}
-		sql = "CREATE TABLE IF NOT EXISTS carbondata(" \
-			"id INTEGER PRIMARY KEY AUTOINCREMENT," \
-			"energy_emission DOUBLE NOT NULL," \
-			"gas_emission DOUBLE NOT NULL," \
-			"waste_emission DOUBLE NOT NULL,"\
-			"total_emission DOUBLE NOT NULL);";
+		sql = "CREATE TABLE IF NOT EXISTS carbondata(" 
+			"id INTEGER PRIMARY KEY AUTOINCREMENT," 
+			"energy_emission DOUBLE NOT NULL," 
+			"gas_emission DOUBLE NOT NULL," 
+			"waste_emission DOUBLE NOT NULL,"
+			"total_emission DOUBLE NOT NULL,"
+			"suggestions TEXT,"
+			"date TEXT NOT NULL);";
 
 		Execute(db, sql, zErrMsg);
-		sql = "INSERT INTO carbondata (energy_emission, gas_emission, waste_emission, total_emission) VALUEs ( ?, ?, ?, ?);";
+		sql = "INSERT INTO carbondata (energy_emission, gas_emission, waste_emission, total_emission, suggestion) VALUEs ( ?, ?, ?, ?, ?);";
 		rc = sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
 		if (rc != SQLITE_OK) {
 			std::cerr << "SQL error: " << sqlite3_errmsg(db) << std::endl;
@@ -102,6 +148,16 @@ public:
 			return(-1);
 		}
 		rc = sqlite3_bind_double(stmt, 4, data.totalemission);
+		if (rc != SQLITE_OK) {
+			std::cerr << "SQL error: " << sqlite3_errmsg(db) << std::endl;
+			return(-1);
+		}
+		rc = sqlite3_bind_text(stmt, 5, data.suggestion.c_str(), -1, NULL);
+		if (rc != SQLITE_OK) {
+			std::cerr << "SQL error: " << sqlite3_errmsg(db) << std::endl;
+			return(-1);
+		}
+		rc = sqlite3_bind_text(stmt, 5, std::to_string(data.Date).c_str(), -1, NULL);
 		if (rc != SQLITE_OK) {
 			std::cerr << "SQL error: " << sqlite3_errmsg(db) << std::endl;
 			return(-1);
