@@ -116,7 +116,7 @@ public:
 		}
 		sqlite3_finalize(stmt);
 
-		sql = "SELECT * FROM carbondata;";
+		sql = "SELECT energy_emission, transport_emission, waste_emission, total_emission FROM carbondata;";
 		Execute(db, sql, zErrMsg);
 		sqlite3_close(db);
 		return 0;
