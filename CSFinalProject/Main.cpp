@@ -118,13 +118,13 @@ public:
 
 		sql = "SELECT * FROM carbondata;";
 		Execute(db, sql, zErrMsg);
+		sqlite3_close(db);
 		return 0;
 	}
 };
 
 int main()
 {
-	using namespace fmt;
 	Program program;
 	program.Main();
 	return 0;
