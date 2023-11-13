@@ -124,7 +124,6 @@ public:
 
 int main()
 {
-	using namespace fmt;
 	Program program;
 	program.Main();
 	return 0;
