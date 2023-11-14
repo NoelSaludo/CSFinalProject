@@ -30,15 +30,23 @@ class Program
 			std::cerr << "SQL error: " << zErrMsg << std::endl;
 			sqlite3_free(zErrMsg);
 		}
+	}
+	double calculateDailyEmissions(double time, double averageSpeed, double emissionsFactor[]) {
+		double distance = time * averageSpeed;
+
+		if (averageSpeed < 10.0) {
+			return distance / emissionsFactor[0];
+		}
+		else if (averageSpeed <= 20.0) {
+			return distance / emissionsFactor[1];
+		}
 		else {
-			std::cout << "Execution Success" << std::endl;
+			return distance / emissionsFactor[2];
 		}
 	}
-	//Enter some functions below
 	void CalculateEnergyEmission(CarbonData &data)
 	{
 		double KWH;
-		std::cout << "Energy Emission\n";
 		std::cout << "---------------------------------------------\n";
 		std::cout << "Please check your Electricity Bill and find KWH used\nEnter KWH : ";
 		std::cin >> KWH;
@@ -46,14 +54,57 @@ class Program
 		data.energy_emission = KWH;
 		std::cout << fmt::format("{}kg of CO2 per Month\n",data.energy_emission);
 	}
-	void CalculateTransportEmission(CarbonData& data){}
+	void CalculateTransportEmission(CarbonData& data) {
+		const double gasCarSpeed = 29.9;
+		const double dieselCarSpeed = 29.9;
+		const double dieselJeepneySpeed = 17.57;
+		const double dieselBusSpeed = 14.18;
+
+		double gasCarEmissions[] = { 58.1, 49.5, 39.4 };
+		double dieselCarEmissions[] = { 3.0, 2.5, 2.3 };
+		double dieselJeepneyEmissions[] = { 2.9, 2.5, 2.3 };
+		double dieselBusEmissions[] = { 11.3, 12.4, 11.3 };
+
+
+		double timeOfTravel;
+		char vehicleType;
+
+		std::cout << "Enter time of travel (min): ";
+		std::cin >> timeOfTravel;
+		CarType:
+		std::cout << "Enter type of vehicle (g for Gas Car, d for Diesel Car, j for Diesel Jeepney, b for Diesel Bus): ";
+		std::cin >> vehicleType;
+
+		vehicleType = toupper(vehicleType);
+
+		double dailyEmissions = 0;
+		timeOfTravel /= 60;
+		if (vehicleType == 'G') {
+			dailyEmissions = calculateDailyEmissions(timeOfTravel, gasCarSpeed, gasCarEmissions);
+		}
+		else if (vehicleType == 'D') {
+			dailyEmissions = calculateDailyEmissions(timeOfTravel, dieselCarSpeed, dieselCarEmissions);
+		}
+		else if (vehicleType == 'J') {
+			dailyEmissions = calculateDailyEmissions(timeOfTravel, dieselJeepneySpeed, dieselJeepneyEmissions);
+		}
+		else if (vehicleType == 'B') {
+			dailyEmissions = calculateDailyEmissions(timeOfTravel, dieselBusSpeed, dieselBusEmissions);
+		}
+		else {
+			std::cout << "Invalid vehicle type. Please enter G, D, J, or B." << std::endl;
+			goto CarType;
+		}
+			std::cout << "Monthly Emissions: " << dailyEmissions * 30 << " kilograms of CO2" << std::endl;
+			data.transport_emission = dailyEmissions * 30;
+	}
 	void CalculateWasteEmission(CarbonData& data){
 
 		double fdw, pw, gw, ww, tw, waste,
 			docf, mcf, f, gwp, fd,
 			paper, garden, wood, textile;
 
-		std::cout << "Input the mass(kg) of the waste in terms of: \n" << "Food waste: ";
+		std::cout << "Input the mass(kg) per month of the waste in terms of: \n" << "Food waste: ";
 		std::cin >> fdw;
 		std::cout << "Paper: ";
 		std::cin >> pw;
@@ -67,7 +118,7 @@ class Program
 		docf = 0.5;
 		mcf = 1;
 		f = 0.5;
-		gwp = 28;//kailangan nga yun
+		gwp = 28;
 		fd = fdw * 0.15 * 0.77 * docf * mcf * f * gwp;
 		paper = pw * 0.4 * 0.98 * docf * mcf * f * gwp;
 		garden = gw * 0.17 * 0.77 * docf * mcf * f * gwp;
@@ -78,7 +129,10 @@ class Program
 		std::cout << "Your total waste emission is: " << waste << " kg CO2.\n";
 		data.waste_emission = waste;
 	}
-	void CalculateTotalEmission(CarbonData& data){}
+	void CalculateTotalEmission(CarbonData& data){
+		data.transport_emission = 30;
+		data.totalemission = data.energy_emission + data.transport_emission + data.waste_emission;
+	}
 	void SuggestionFunction(CarbonData& data)
 	{
 		double average_threshold = 201.58, bad_threshold = 277.19;
@@ -148,6 +202,7 @@ public:
 		CalculateEnergyEmission(data);
 		CalculateTransportEmission(data);
 		CalculateWasteEmission(data);
+		CalculateTotalEmission(data);
 		SuggestionFunction(data);
 
 
@@ -178,7 +233,7 @@ public:
 			std::cerr << "SQL error: " << sqlite3_errmsg(db) << std::endl;
 			return(-1);
 		}
-		rc = sqlite3_bind_double(stmt, 2, data.energy_emission); 
+		rc = sqlite3_bind_double(stmt, 2, data.transport_emission); 
 		if (rc != SQLITE_OK) {
 			std::cerr << "SQL error: " << sqlite3_errmsg(db) << std::endl;
 			return(-1);
