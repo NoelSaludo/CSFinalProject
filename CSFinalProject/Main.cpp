@@ -47,7 +47,37 @@ class Program
 		std::cout << fmt::format("{}kg of CO2 per Month\n",data.energy_emission);
 	}
 	void CalculateTransportEmission(CarbonData& data){}
-	void CalculateWasteEmission(CarbonData& data){}
+	void CalculateWasteEmission(CarbonData& data){
+
+		double fdw, pw, gw, ww, tw, waste,
+			docf, mcf, f, gwp, fd,
+			paper, garden, wood, textile;
+
+		std::cout << "Input the mass(kg) of the waste in terms of: \n" << "Food waste: ";
+		std::cin >> fdw;
+		std::cout << "Paper: ";
+		std::cin >> pw;
+		std::cout << "Garden: ";
+		std::cin >> gw;
+		std::cout << "Wood: ";
+		std::cin >> ww;
+		std::cout << "Textile: ";
+		std::cin >> tw;
+
+		docf = 0.5;
+		mcf = 1;
+		f = 0.5;
+		gwp = 28;//kailangan nga yun
+		fd = fdw * 0.15 * 0.77 * docf * mcf * f * gwp;
+		paper = pw * 0.4 * 0.98 * docf * mcf * f * gwp;
+		garden = gw * 0.17 * 0.77 * docf * mcf * f * gwp;
+		wood = ww * 0.43 * 0.98 * docf * mcf * f * gwp;
+		textile = tw * 0.24 * 0.77 * docf * mcf * f * gwp;
+		waste = fd + paper + garden + wood + textile;
+
+		std::cout << "Your total waste emission is: " << waste << " kg CO2.\n";
+		data.waste_emission = waste;
+	}
 	void CalculateTotalEmission(CarbonData& data){}
 	void SuggestionFunction(CarbonData& data)
 	{
