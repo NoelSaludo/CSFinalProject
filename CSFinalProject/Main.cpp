@@ -44,6 +44,19 @@ class Program
 			return distance / emissionsFactor[2];
 		}
 	}
+	double calculateDailyEmissions(double time, double averageSpeed, double emissionsFactor[]) {
+		double distance = time * averageSpeed;
+
+		if (averageSpeed < 10.0) {
+			return distance / emissionsFactor[0];
+		}
+		else if (averageSpeed <= 20.0) {
+			return distance / emissionsFactor[1];
+		}
+		else {
+			return distance / emissionsFactor[2];
+		}
+	}
 	void CalculateEnergyEmission(CarbonData &data)
 	{
 		double KWH;
