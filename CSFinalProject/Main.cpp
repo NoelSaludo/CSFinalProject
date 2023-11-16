@@ -13,7 +13,8 @@ public:
 	std::string suggestion;
 	std::string DateTime = std::ctime(&Time);
 	
-};
+};//yaan mo muna
+
 class Program
 {
 	static int callback(void* data, int argc, char** argv, char** azColName) {
@@ -59,7 +60,7 @@ class Program
 		const double dieselCarSpeed = 29.9;
 		const double dieselJeepneySpeed = 17.57;
 		const double dieselBusSpeed = 14.18;
-		unsigned long daysOfTravelPerMonth;
+		double daysOfTravelPerMonth;
 
 		double gasCarEmissions[] = { 58.1, 49.5, 39.4 };
 		double dieselCarEmissions[] = { 3.0, 2.5, 2.3 };
@@ -137,22 +138,31 @@ class Program
 	}
 	void SuggestionFunction(CarbonData& data)
 	{
+		data.energy_emission = 350;
 		double average_threshold = 201.58, bad_threshold = 277.19;
 		std::string Suggestion = "Suggestion to reduce your monthly carbon emission:\n";
+		std::cout << "In Electricity:\n";
 		if (data.energy_emission > bad_threshold)
 		{
-			Suggestion += "";//5 suggestion
+			Suggestion += "---if you own any Air conditioning at your household we suggest to reduce it's usage to reduce the its carbon emission. "
+					"This can reduce your energy use by 10% and reduce your emission by 200kg per year. You can rely on curtains, fans, or natural "
+				"ventilation to cool your home instead of using AC.---\n\n---Switch your appliances such as AC, refirgerators, and washing machine to inverter appliances "
+				". Inverter appliances use less electricity than their normal counter parts and produce less heat. Inverter appliances can help you reduce energy consumption "
+				"by 50% and reduce your CO2 emission by 1200kg per year---\n\n";//5 suggestion
 		}
-		else if(data.energy_emission > average_threshold)
+		if(data.energy_emission > average_threshold)
 		{
 
-			Suggestion += "";//3 suggestion
+			Suggestion += "---if you are currently using on any incandescent light bulbs we reccomend on replacing them with LED bulbs as "
+					"as LED bulbs are 85% more efficient than an incandescent bulbs. By doing so you can reduce your CO2 emissions by 500kg"
+					" per year.---\n\n---Use a power strip, a smart plug, or unplug unsused devices. Phantom energy loss accounts about 10% of your household electricity "
+					"use. Phantom loss is the energy loss in devices that is still plugged in even though the devices are powered off. By using smart plugs "
+					"or unplugging devices that isn't in use can reduce your household electricity and reduce over 400kg of CO2 per year.---\n\n";//3 suggestion
 		}
-		else 
-		{
 
-			Suggestion += "";//1 suggestion
-		}
+		Suggestion += "---installing solar panels around your power your home can reduce your energy consumption therefore your carbon emission. "
+					"We suggest to use CBH Solar Light as it offers 120 degrees of ilumination adn 2600 lumens of brghtness and it can also provide "
+					"as it can provide 10 hours of light. Using renewable resources can really help you reduce your carbon emission.---\n\n";//1 suggestion
 		if (data.transport_emission > bad_threshold) 
 		{
 
@@ -168,6 +178,7 @@ class Program
 
 			Suggestion += "";//same here
 		}
+		//dito ka kalel maggawa lagay mo nalang sa mga colon yung suggestion mo tsaka dapat may sources ka
 		if (data.waste_emission > bad_threshold) 
 		{
 
@@ -183,7 +194,7 @@ class Program
 
 			Suggestion += "";//same here
 		}
-
+		std::cout << Suggestion;
 		data.suggestion = Suggestion;
 	}
 
@@ -204,11 +215,11 @@ public:
 			
 
 		std::cout << "CarbonFootprint Calculator\n";
-		//CalculateEnergyEmission(data);
+		/*CalculateEnergyEmission(data);
 		CalculateTransportEmission(data);
-		//CalculateWasteEmission(data);
-		//CalculateTotalEmission(data);
-		//SuggestionFunction(data);
+		CalculateWasteEmission(data);
+		CalculateTotalEmission(data);*/
+		SuggestionFunction(data);
 
 
 		//do not touch please
@@ -276,7 +287,7 @@ public:
 		sql = "SELECT energy_emission, transport_emission, waste_emission, total_emission, suggestions, date FROM carbondata;";
 		Execute(db, sql, zErrMsg);
 		sql = "DELETE FROM carbondata;";
-		Execute(db, sql, zErrMsg);
+		//Execute(db, sql, zErrMsg);
 		sqlite3_close(db);
 		return 0;
 	}
