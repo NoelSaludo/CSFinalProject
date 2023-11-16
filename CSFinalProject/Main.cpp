@@ -53,7 +53,7 @@ class Program
 		std::cin >> KWH;
 		KWH = KWH * 0.6032;
 		data.energy_emission = KWH;
-		std::cout << data.energy_emission << "kg of CO2 per Month\n";
+		std::cout << "Your energy emission: " << data.energy_emission << "kg of CO2\n";
 	}
 	void CalculateTransportEmission(CarbonData& data) {
 		const double gasCarSpeed = 29.9;
@@ -70,8 +70,13 @@ class Program
 
 		double timeOfTravel;
 		char vehicleType;
+		start:
 		std::cout << "How many times do you go to work, school, or out in a week?\n";
 		std::cin >> daysOfTravelPerMonth;
+		if (daysOfTravelPerMonth > 7) {
+			std::cout << "please enter a number between 1 and 7\n";
+			goto start;
+		}
 		std::cout << "How long does the travel take in minutes? ";
 		std::cin >> timeOfTravel;
 		CarType:
@@ -98,7 +103,7 @@ class Program
 			std::cout << "Invalid vehicle type. Please enter G, D, J, or B." << std::endl;
 			goto CarType;
 		}
-			std::cout << "Monthly Emissions: " << dailyEmissions * (daysOfTravelPerMonth * 4) << " kilograms of CO2" << std::endl;
+			std::cout << "Your transport emissions: " << dailyEmissions * (daysOfTravelPerMonth * 4) << " kg of CO2" << std::endl;
 			data.transport_emission = dailyEmissions * (daysOfTravelPerMonth * 4);
 	}
 	void CalculateWasteEmission(CarbonData& data){
@@ -129,28 +134,31 @@ class Program
 		textile = tw * 0.24 * 0.77 * docf * mcf * f * gwp;
 		waste = fd + paper + garden + wood + textile;
 
-		std::cout << "Your total waste emission is: " << waste << " kg CO2.\n";
+		std::cout << "Your waste emission is: " << waste << " kg of CO2.\n";
 		data.waste_emission = waste;
 	}
 	void CalculateTotalEmission(CarbonData& data){
-		data.transport_emission = 30;
 		data.totalemission = data.energy_emission + data.transport_emission + data.waste_emission;
+		std::cout << "Your total carbon emission this month: " << data.totalemission << "kg of CO2\n";
 	}
 	void SuggestionFunction(CarbonData& data)
 	{
-		data.energy_emission = 350;
-		double average_threshold = 201.58, bad_threshold = 277.19;
-		std::string Suggestion = "Suggestion to reduce your monthly carbon emission:\n";
-		std::cout << "In Electricity:\n";
+		double average_threshold = 98, bad_threshold = 169;
+		std::string Suggestion;
+		std::cout << "Suggestion to reduce your monthly carbon emission:\n";
+		std::cout << "In Electricity:";
+
+		double test = bad_threshold;
+		std::cout << test;
 		if (data.energy_emission > bad_threshold)
 		{
-			Suggestion += "---if you own any Air conditioning at your household we suggest to reduce it's usage to reduce the its carbon emission. "
+			Suggestion += "\n---if you own any Air conditioning at your household we suggest to reduce it's usage to reduce the its carbon emission. "
 					"This can reduce your energy use by 10% and reduce your emission by 200kg per year. You can rely on curtains, fans, or natural "
 				"ventilation to cool your home instead of using AC.---\n\n---Switch your appliances such as AC, refirgerators, and washing machine to inverter appliances "
 				". Inverter appliances use less electricity than their normal counter parts and produce less heat. Inverter appliances can help you reduce energy consumption "
 				"by 50% and reduce your CO2 emission by 1200kg per year---\n\n";//5 suggestion
 		}
-		if(data.energy_emission > average_threshold)
+		if(data.energy_emission> average_threshold*.50)
 		{
 
 			Suggestion += "---if you are currently using on any incandescent light bulbs we reccomend on replacing them with LED bulbs as "
@@ -158,17 +166,18 @@ class Program
 					" per year.---\n\n---Use a power strip, a smart plug, or unplug unsused devices. Phantom energy loss accounts about 10% of your household electricity "
 					"use. Phantom loss is the energy loss in devices that is still plugged in even though the devices are powered off. By using smart plugs "
 					"or unplugging devices that isn't in use can reduce your household electricity and reduce over 400kg of CO2 per year.---\n\n";//3 suggestion
+			std::cout << average_threshold * .50;
 		}
 
-		Suggestion += "---installing solar panels around your power your home can reduce your energy consumption therefore your carbon emission. "
+		Suggestion += "---Installing solar panels around your power your home can reduce your energy consumption therefore your carbon emission. "
 					"We suggest to use CBH Solar Light as it offers 120 degrees of ilumination adn 2600 lumens of brghtness and it can also provide "
 					"as it can provide 10 hours of light. Using renewable resources can really help you reduce your carbon emission.---\n\n";//1 suggestion
-		if (data.transport_emission > bad_threshold) 
+		if (data.transport_emission > bad_threshold*.40) 
 		{
 
 			Suggestion += "";//same here
 		}
-		else if (data.transport_emission > average_threshold) 
+		else if (data.transport_emission > average_threshold*.40) 
 		{
 
 			Suggestion += "";//same here
@@ -179,12 +188,12 @@ class Program
 			Suggestion += "";//same here
 		}
 		//dito ka kalel maggawa lagay mo nalang sa mga colon yung suggestion mo tsaka dapat may sources ka
-		if (data.waste_emission > bad_threshold) 
+		if (data.waste_emission > bad_threshold*.10) 
 		{
 
 			Suggestion += "";//same here
 		}
-		else if (data.waste_emission > average_threshold) 
+		else if (data.waste_emission > average_threshold*.10) 
 		{
 
 			Suggestion += "";//same here
@@ -197,10 +206,35 @@ class Program
 		std::cout << Suggestion;
 		data.suggestion = Suggestion;
 	}
-
-	void menu()
+	void CalculatingEmisison(CarbonData& data)
+	{
+		CalculateEnergyEmission(data);
+		CalculateTransportEmission(data);
+		CalculateWasteEmission(data);
+		CalculateTotalEmission(data);
+		SuggestionFunction(data);
+	}
+	void Statistic(sqlite3* db, CarbonData& data)
 	{
 
+	}
+	void menu(sqlite3* db,CarbonData& data)
+	{
+		unsigned int input;
+		std::cout << "Menu\n1.)Calculate your emission\n2.)Statistics\n3.)Exit\n";
+		std::cin >> input;
+		switch (input)
+		{
+		case 1:
+			system("cls");
+			CalculatingEmisison(data);
+			break;
+		case 2:
+			Statistic(db, data);
+			break;
+		default:
+			break;
+		}
 	}
 public:
 
@@ -212,18 +246,14 @@ public:
 		int rc;
 		const char* sql;
 		sqlite3_stmt* stmt;
+
+		rc = sqlite3_open("calculator.db", &db);
 			
 
 		std::cout << "CarbonFootprint Calculator\n";
-		/*CalculateEnergyEmission(data);
-		CalculateTransportEmission(data);
-		CalculateWasteEmission(data);
-		CalculateTotalEmission(data);*/
-		SuggestionFunction(data);
-
+		menu(db, data);
 
 		//do not touch please
-		rc = sqlite3_open("calculator.db", &db);
 		if (rc) {
 			std::cerr << "Can't open database: " << sqlite3_errmsg(db) << std::endl;
 			return (0);
@@ -284,10 +314,10 @@ public:
 		}
 		sqlite3_finalize(stmt);
 
-		sql = "SELECT energy_emission, transport_emission, waste_emission, total_emission, suggestions, date FROM carbondata;";
+		sql = "SELECT * FROM carbondata;";
 		Execute(db, sql, zErrMsg);
 		sql = "DELETE FROM carbondata;";
-		//Execute(db, sql, zErrMsg);
+		Execute(db, sql, zErrMsg);
 		sqlite3_close(db);
 		return 0;
 	}
