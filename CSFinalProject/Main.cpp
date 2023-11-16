@@ -44,19 +44,6 @@ class Program
 			return distance / emissionsFactor[2];
 		}
 	}
-	double calculateDailyEmissions(double time, double averageSpeed, double emissionsFactor[]) {
-		double distance = time * averageSpeed;
-
-		if (averageSpeed < 10.0) {
-			return distance / emissionsFactor[0];
-		}
-		else if (averageSpeed <= 20.0) {
-			return distance / emissionsFactor[1];
-		}
-		else {
-			return distance / emissionsFactor[2];
-		}
-	}
 	void CalculateEnergyEmission(CarbonData &data)
 	{
 		double KWH;
@@ -65,13 +52,14 @@ class Program
 		std::cin >> KWH;
 		KWH = KWH * 0.6032;
 		data.energy_emission = KWH;
-		std::cout << fmt::format("{}kg of CO2 per Month\n",data.energy_emission);
+		std::cout << data.energy_emission << "kg of CO2 per Month\n";
 	}
 	void CalculateTransportEmission(CarbonData& data) {
 		const double gasCarSpeed = 29.9;
 		const double dieselCarSpeed = 29.9;
 		const double dieselJeepneySpeed = 17.57;
 		const double dieselBusSpeed = 14.18;
+		unsigned long daysOfTravelPerMonth;
 
 		double gasCarEmissions[] = { 58.1, 49.5, 39.4 };
 		double dieselCarEmissions[] = { 3.0, 2.5, 2.3 };
@@ -81,11 +69,12 @@ class Program
 
 		double timeOfTravel;
 		char vehicleType;
-
-		std::cout << "Enter time of travel (min): ";
+		std::cout << "How many times do you go to work, school, or out in a week?\n";
+		std::cin >> daysOfTravelPerMonth;
+		std::cout << "How long does the travel take in minutes? ";
 		std::cin >> timeOfTravel;
 		CarType:
-		std::cout << "Enter type of vehicle (g for Gas Car, d for Diesel Car, j for Diesel Jeepney, b for Diesel Bus): ";
+		std::cout << "Please enter the type of vehicle do you often use to go to work:\ng. Gas Car\nd. Diesel Car\nj. Diesel Jeep\nb. Diesel Bus\n ";
 		std::cin >> vehicleType;
 
 		vehicleType = toupper(vehicleType);
@@ -108,8 +97,8 @@ class Program
 			std::cout << "Invalid vehicle type. Please enter G, D, J, or B." << std::endl;
 			goto CarType;
 		}
-			std::cout << "Monthly Emissions: " << dailyEmissions * 30 << " kilograms of CO2" << std::endl;
-			data.transport_emission = dailyEmissions * 30;
+			std::cout << "Monthly Emissions: " << dailyEmissions * (daysOfTravelPerMonth * 4) << " kilograms of CO2" << std::endl;
+			data.transport_emission = dailyEmissions * (daysOfTravelPerMonth * 4);
 	}
 	void CalculateWasteEmission(CarbonData& data){
 
@@ -198,7 +187,10 @@ class Program
 		data.suggestion = Suggestion;
 	}
 
-	
+	void menu()
+	{
+
+	}
 public:
 
 	int Main()
@@ -212,11 +204,11 @@ public:
 			
 
 		std::cout << "CarbonFootprint Calculator\n";
-		CalculateEnergyEmission(data);
+		//CalculateEnergyEmission(data);
 		CalculateTransportEmission(data);
-		CalculateWasteEmission(data);
-		CalculateTotalEmission(data);
-		SuggestionFunction(data);
+		//CalculateWasteEmission(data);
+		//CalculateTotalEmission(data);
+		//SuggestionFunction(data);
 
 
 		//do not touch please
