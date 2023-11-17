@@ -1,17 +1,28 @@
 #include "Main.h"
 
-auto _time = std::chrono::system_clock::now();
-std::time_t Time = std::chrono::system_clock::to_time_t(_time);
+
 class CarbonData 
 {
 
 public:
+	int id;
 	double energy_emission,
 	       transport_emission,
 	       waste_emission,
 			totalemission;
 	std::string suggestion;
-	std::string DateTime = std::ctime(&Time);
+	std::string DateTime;
+	CarbonData(int i, double e, double t, double w, double tt, std::string sug, std::string date)
+	{
+		id = i;
+		energy_emission = e;
+		transport_emission = t;
+		waste_emission = w;
+		totalemission = tt;
+		suggestion = sug;
+		DateTime = date;
+	}
+
 	
 };//yaan mo muna
 
@@ -31,6 +42,13 @@ class Program
 			std::cerr << "SQL error: " << zErrMsg << std::endl;
 			sqlite3_free(zErrMsg);
 		}
+	}
+	void gettime(CarbonData &data) {
+		auto start = std::chrono::system_clock::now();
+		auto legacyStart = std::chrono::system_clock::to_time_t(start);
+		char tmBuff[30];
+		ctime_s(tmBuff, sizeof(tmBuff), &legacyStart);
+		data.DateTime = tmBuff;
 	}
 	double calculateDailyEmissions(double time, double averageSpeed, double emissionsFactor[]) {
 		double distance = time * averageSpeed;
@@ -194,85 +212,34 @@ class Program
 		std::cout << Suggestion <<" \n sources \n "<<energylinks;
 		data.suggestion = Suggestion;
 	}
-	void CalculatingEmisison(CarbonData& data)
+	int CalculatingEmisison(sqlite3* db,CarbonData& data)
 	{
+		int rc;
+		const char* sql;
+		sqlite3_stmt* stmt;
 		CalculateEnergyEmission(data);
 		CalculateTransportEmission(data);
 		CalculateWasteEmission(data);
 		CalculateTotalEmission(data);
 		SuggestionFunction(data);
-	}
-	void Statistic(sqlite3* db, CarbonData& data)
-	{
 
-	}
-	void menu(sqlite3* db,CarbonData& data)
-	{
-		unsigned int input;
-		std::cout << "Menu\n1.)Calculate your emission\n2.)Statistics\n3.)Exit\n";
-		std::cin >> input;
-		switch (input)
-		{
-		case 1:
-			system("cls");
-			CalculatingEmisison(data);
-			break;
-		case 2:
-			Statistic(db, data);
-			break;
-		default:
-			break;
-		}
-	}
-public:
-
-	int Main()
-	{
-		CarbonData data;
-		sqlite3* db;
-		char* zErrMsg = 0;
-		int rc;
-		const char* sql;
-		sqlite3_stmt* stmt;
-
-		rc = sqlite3_open("calculator.db", &db);
-			
-
-		std::cout << "CarbonFootprint Calculator\n";
-		menu(db, data);
-
-		//do not touch please
-		if (rc) {
-			std::cerr << "Can't open database: " << sqlite3_errmsg(db) << std::endl;
-			return (0);
-		}
-		sql = "CREATE TABLE IF NOT EXISTS carbondata(" \
-			"id INTEGER PRIMARY KEY AUTOINCREMENT," \
-			"energy_emission DOUBLE NOT NULL," \
-			"transport_emission DOUBLE NOT NULL," \
-			"waste_emission DOUBLE NOT NULL,"\
-			"total_emission DOUBLE NOT NULL,"\
-			"suggestions TEXT,"\
-			"date TEXT NOT NULL);";
-
-		Execute(db, sql, zErrMsg);
 		sql = "INSERT INTO carbondata (energy_emission, transport_emission, waste_emission, total_emission, suggestions, date) VALUEs ( ?, ?, ?, ?, ?, ?);";
 		rc = sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
 		if (rc != SQLITE_OK) {
 			std::cerr << "SQL error: " << sqlite3_errmsg(db) << std::endl;
 			return(-1);
 		}
-		rc = sqlite3_bind_double(stmt, 1, data.energy_emission); 
+		rc = sqlite3_bind_double(stmt, 1, data.energy_emission);
 		if (rc != SQLITE_OK) {
 			std::cerr << "SQL error: " << sqlite3_errmsg(db) << std::endl;
 			return(-1);
 		}
-		rc = sqlite3_bind_double(stmt, 2, data.transport_emission); 
+		rc = sqlite3_bind_double(stmt, 2, data.transport_emission);
 		if (rc != SQLITE_OK) {
 			std::cerr << "SQL error: " << sqlite3_errmsg(db) << std::endl;
 			return(-1);
 		}
-		rc = sqlite3_bind_double(stmt, 3, data.waste_emission); 
+		rc = sqlite3_bind_double(stmt, 3, data.waste_emission);
 		if (rc != SQLITE_OK) {
 			std::cerr << "SQL error: " << sqlite3_errmsg(db) << std::endl;
 			return(-1);
@@ -292,20 +259,107 @@ public:
 			std::cerr << "SQL error: " << sqlite3_errmsg(db) << std::endl;
 			return(-1);
 		}
-		rc = sqlite3_step(stmt); 
+		rc = sqlite3_step(stmt);
 		if (rc != SQLITE_DONE) {
 			std::cerr << "SQL error: " << sqlite3_errmsg(db) << std::endl;
 			return(-1);
 		}
 		else {
 			std::cout << "Record inserted successfully" << std::endl;
+			return 0;
 		}
 		sqlite3_finalize(stmt);
+		return 0;
+	}
+	std::vector<CarbonData> query_db(sqlite3* db, std::string sql) {
+		std::vector<CarbonData> results;
+		sqlite3_stmt* stmt;
+		int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, NULL);
+		if (rc != SQLITE_OK) {
+			std::cerr << "Error preparing statement: " << sqlite3_errmsg(db) << std::endl;
+			return results;
+		}
+		while ((rc = sqlite3_step(stmt)) == SQLITE_ROW) {
+			int id = sqlite3_column_int(stmt, 0);
+			double energy_emission = sqlite3_column_double(stmt, 1);
+			double transport_emission = sqlite3_column_double(stmt, 2);
+			double waste_emission = sqlite3_column_double(stmt, 3);
+			double totalemission = sqlite3_column_double(stmt, 4);
+			std::string suggestion = (char*)sqlite3_column_text(stmt, 5);
+			std::string DateTime = (char*)sqlite3_column_text(stmt, 6);
+			CarbonData cd(id, energy_emission, transport_emission, waste_emission, totalemission, suggestion, DateTime);
+			results.push_back(cd);
+		}
+		if (rc != SQLITE_DONE) {
+			std::cerr << "Error executing statement: " << sqlite3_errmsg(db) << std::endl;
+		}
+		sqlite3_finalize(stmt);
+		return results;
+	}
 
+	void Statistic(sqlite3* db, CarbonData& data)
+	{
+		const char* sql;
 		sql = "SELECT * FROM carbondata;";
+		std::vector<CarbonData> results= query_db(db, sql);
+
+		for (CarbonData d : results)
+		{
+			std::cout << d.totalemission << std::endl;
+		}
+	}
+	void menu(sqlite3* db,CarbonData& data)
+	{
+		unsigned int input;
+		std::cout << "Menu\n1.)Calculate your emission\n2.)Statistics\n3.)Exit\n";
+		std::cin >> input;
+		switch (input)
+		{
+		case 1:
+			system("cls");
+			CalculatingEmisison(db, data);
+			break;
+		case 2:
+			system("cls");
+			Statistic(db, data);
+			break;
+		default:
+			break;
+		}
+	}
+public:
+
+	int Main()
+	{
+		CarbonData data(0, 0, 0, 0, 0, "", "");
+		sqlite3* db;
+		char* zErrMsg = 0;
+		int rc;
+		const char* sql;
+
+		rc = sqlite3_open("calculator.db", &db);
+
+		//do not touch please
+		if (rc) {
+			std::cerr << "Can't open database: " << sqlite3_errmsg(db) << std::endl;
+			return (0);
+		}
+		sql = "CREATE TABLE IF NOT EXISTS carbondata(" \
+			"id INTEGER PRIMARY KEY AUTOINCREMENT," \
+			"energy_emission DOUBLE NOT NULL," \
+			"transport_emission DOUBLE NOT NULL," \
+			"waste_emission DOUBLE NOT NULL,"\
+			"total_emission DOUBLE NOT NULL,"\
+			"suggestions TEXT,"\
+			"date TEXT NOT NULL);";
+
 		Execute(db, sql, zErrMsg);
-		sql = "DELETE * FROM carbondata;";
-		Execute(db, sql, zErrMsg);
+
+		std::cout << "CarbonFootprint Calculator\n";
+		menu(db, data);
+
+		
+
 		sqlite3_close(db);
 		return 0;
 	}
