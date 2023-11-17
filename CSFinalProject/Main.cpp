@@ -143,67 +143,55 @@ class Program
 	}
 	void SuggestionFunction(CarbonData& data)
 	{
-		double average_threshold = 98, bad_threshold = 169;
+		double philippineaverage = 1200 / 12;
 		std::string Suggestion;
+		std::string energylinks;
 		std::cout << "Suggestion to reduce your monthly carbon emission:\n";
 		std::cout << "In Electricity:";
 
-		double test = bad_threshold;
-		std::cout << test;
-		if (data.energy_emission > bad_threshold)
+		if (data.energy_emission > philippineaverage)
 		{
 			Suggestion += "\n---if you own any Air conditioning at your household we suggest to reduce it's usage to reduce the its carbon emission. "
-					"This can reduce your energy use by 10% and reduce your emission by 200kg per year. You can rely on curtains, fans, or natural "
+				"This can reduce your energy use by 10% and reduce your emission by 200kg per year. You can rely on curtains, fans, or natural "
 				"ventilation to cool your home instead of using AC.---\n\n---Switch your appliances such as AC, refirgerators, and washing machine to inverter appliances "
 				". Inverter appliances use less electricity than their normal counter parts and produce less heat. Inverter appliances can help you reduce energy consumption "
-				"by 50% and reduce your CO2 emission by 1200kg per year---\n\n";//5 suggestion
+				"by 50% and reduce your CO2 emission by 1200kg per year---\n\n""---if you are currently using on any incandescent light bulbs we reccomend on replacing them with LED bulbs as "
+				"as LED bulbs are 85% more efficient than an incandescent bulbs. By doing so you can reduce your CO2 emissions by 500kg"
+				" per year.---\n\n---Use a power strip, a smart plug, or unplug unsused devices. Phantom energy loss accounts about 10% of your household electricity "
+				"use. Phantom loss is the energy loss in devices that is still plugged in even though the devices are powered off. By using smart plugs "
+				"or unplugging devices that isn't in use can reduce your household electricity and reduce over 400kg of CO2 per year.---\n\n ";//5 suggestion
+			energylinks += "https://www.metrobank.com.ph/articles/learn/how-to-save-on-electrical-bills \n https://www.moneymax.ph/lifestyle/articles/home-energy-saving-tips \n"
+				" https://www.doe.gov.ph/energy-efficiency/overview \n";
 		}
-		if(data.energy_emission> average_threshold*.50)
-		{
-
-			Suggestion += "---if you are currently using on any incandescent light bulbs we reccomend on replacing them with LED bulbs as "
-					"as LED bulbs are 85% more efficient than an incandescent bulbs. By doing so you can reduce your CO2 emissions by 500kg"
-					" per year.---\n\n---Use a power strip, a smart plug, or unplug unsused devices. Phantom energy loss accounts about 10% of your household electricity "
-					"use. Phantom loss is the energy loss in devices that is still plugged in even though the devices are powered off. By using smart plugs "
-					"or unplugging devices that isn't in use can reduce your household electricity and reduce over 400kg of CO2 per year.---\n\n";//3 suggestion
-			std::cout << average_threshold * .50;
+		if (data.energy_emission < philippineaverage) {
+			Suggestion += "\n---Installing solar panels around your power your home can reduce your energy consumption therefore your carbon emission. "
+				"We suggest to use CBH Solar Light as it offers 120 degrees of ilumination adn 2600 lumens of brghtness and it can also provide "
+				"as it can provide 10 hours of light. Using renewable resources can really help you reduce your carbon emission.---\n\n";//1 suggestion
+			energylinks += "https://www.doe.gov.ph/energy-efficiency/overview \n";
 		}
-
-		Suggestion += "---Installing solar panels around your power your home can reduce your energy consumption therefore your carbon emission. "
-					"We suggest to use CBH Solar Light as it offers 120 degrees of ilumination adn 2600 lumens of brghtness and it can also provide "
-					"as it can provide 10 hours of light. Using renewable resources can really help you reduce your carbon emission.---\n\n";//1 suggestion
-		if (data.transport_emission > bad_threshold*.40) 
-		{
-
-			Suggestion += "";//same here
-		}
-		else if (data.transport_emission > average_threshold*.40) 
+		
+		if (data.transport_emission > philippineaverage) 
 		{
 
 			Suggestion += "";//same here
 		}
-		else 
+		if(data.transport_emission < philippineaverage)
 		{
 
 			Suggestion += "";//same here
 		}
 		//dito ka kalel maggawa lagay mo nalang sa mga colon yung suggestion mo tsaka dapat may sources ka
-		if (data.waste_emission > bad_threshold*.10) 
+		if (data.waste_emission > philippineaverage) 
 		{
 
 			Suggestion += "";//same here
 		}
-		else if (data.waste_emission > average_threshold*.10) 
+		if(data.waste_emission < philippineaverage)
 		{
 
 			Suggestion += "";//same here
 		}
-		else 
-		{
-
-			Suggestion += "";//same here
-		}
-		std::cout << Suggestion;
+		std::cout << Suggestion <<" \n sources \n "<<energylinks;
 		data.suggestion = Suggestion;
 	}
 	void CalculatingEmisison(CarbonData& data)
@@ -316,7 +304,7 @@ public:
 
 		sql = "SELECT * FROM carbondata;";
 		Execute(db, sql, zErrMsg);
-		sql = "DELETE FROM carbondata;";
+		sql = "DELETE * FROM carbondata;";
 		Execute(db, sql, zErrMsg);
 		sqlite3_close(db);
 		return 0;
