@@ -1,9 +1,24 @@
 #include "Main.h"
 
-
 class CarbonData 
 {
+	std::string getCurrentDate() {
+		auto now = std::chrono::system_clock::now();
+		std::time_t currentTime = std::chrono::system_clock::to_time_t(now);
+		std::tm localTime = {};
+		if (localtime_s(&localTime, &currentTime) != 0) {
+			std::cerr << "Failed to get local time" << std::endl;
+			return "";
+		}
 
+		int year = localTime.tm_year + 1900;
+		int month = localTime.tm_mon + 1;
+		int day = localTime.tm_mday;
+		std::stringstream dateString;
+		dateString << year << "-" << month << "-" << day;
+
+		return dateString.str();
+	}
 public:
 	int id;
 	double energy_emission,
@@ -11,9 +26,9 @@ public:
 	       waste_emission,
 			totalemission;
 	std::string suggestion;
-	std::string DateTime;
+	std::string DateTime = getCurrentDate();
 	std::string vehicletype;
-	CarbonData(int i, double e, double t, double w, double tt,std::string veh, std::string sug, std::string date)
+	CarbonData(int i = 0, double e = 0, double t = 0, double w=0, double tt=0,std::string veh="", std::string sug="")
 	{
 		id = i;
 		energy_emission = e;
@@ -22,7 +37,6 @@ public:
 		totalemission = tt;
 		vehicletype = veh;
 		suggestion = sug;
-		DateTime = date;
 	}
 
 	
@@ -210,12 +224,12 @@ class Program
 			energylinks += "https://www.doe.gov.ph/energy-efficiency/overview \n";
 		}
 		
-		if (data.transport_emission > philippineaverage * .1) 
+		if (data.transport_emission > philippineaverage * .01) 
 		{
 
 			Suggestion += "";//same here
 		}
-		if(data.transport_emission < philippineaverage * .1)
+		if(data.transport_emission < philippineaverage * .01)
 		{
 
 			Suggestion += "";//same here
@@ -235,7 +249,7 @@ class Program
 		data.suggestion = Suggestion;
 	}
 	
-	int CalculatingEmisison(sqlite3* db, CarbonData& data)
+	int CalculatingEmission(sqlite3* db, CarbonData& data)
 	{
 		int rc;
 		const char* sql;
@@ -323,7 +337,7 @@ class Program
 			std::string vehicle_type = (char*)sqlite3_column_text(stmt, 5);
 			std::string suggestion = (char*)sqlite3_column_text(stmt, 6);
 			std::string DateTime = (char*)sqlite3_column_text(stmt, 7);
-			CarbonData cd(id, energy_emission, transport_emission, waste_emission, totalemission, vehicle_type, suggestion, DateTime);
+			CarbonData cd(id, energy_emission, transport_emission, waste_emission, totalemission, vehicle_type, suggestion);
 			results.push_back(cd);
 		}
 		if (rc != SQLITE_DONE) {
@@ -332,7 +346,42 @@ class Program
 		sqlite3_finalize(stmt);
 		return results;
 	}
+	int all_reccomendation()
+	{
+		std::cout << "All recommendation to reduce carbon emission and lower carbon footprint\n";
 
+		//All about reducing energy consumption
+		std::cout << "Reducing energy consumption and emission\n\n";
+		std::cout << "---if you own any Air conditioning at your household we suggest to reduce it's usage to reduce the its carbon emission. "
+
+				"This can reduce your energy use by 10% and reduce your emission by 200kg per year. You can rely on curtains, fans, or natural "
+
+				"ventilation to cool your home instead of using AC.---\n\n";
+		std::cout << "---Switch your appliances such as AC, refirgerators, and washing machine to inverter appliances "
+
+			". Inverter appliances use less electricity than their normal counter parts and produce less heat. Inverter appliances can help you reduce energy consumption "
+
+			"by 50% and reduce your CO2 emission by 1200kg per year---\n\n";
+		std::cout << "---if you are currently using on any incandescent light bulbs we reccomend on replacing them with LED bulbs as "
+
+			"as LED bulbs are 85% more efficient than an incandescent bulbs. By doing so you can reduce your CO2 emissions by 500kg"
+
+			" per year.---\n\n";
+		std::cout << "---Use a power strip, a smart plug, or unplug unsused devices. Phantom energy loss accounts about 10% of your household electricity "
+
+			"use. Phantom loss is the energy loss in devices that is still plugged in even though the devices are powered off. By using smart plugs "
+
+			"or unplugging devices that isn't in use can reduce your household electricity and reduce over 400kg of CO2 per year.---\n\n";
+		std::cout << "---Installing solar panels around your power your home can reduce your energy consumption therefore your carbon emission. "
+
+			"We suggest to use CBH Solar Light as it offers 120 degrees of ilumination adn 2600 lumens of brghtness and it can also provide "
+
+			"as it can provide 10 hours of light. Using renewable resources can really help you reduce your carbon emission.---\n\n";
+
+		system("pause");
+		system("cls");
+		return 1;
+	}
 	void Statistic(sqlite3* db, CarbonData& data)
 	{
 		const char* sql;
@@ -342,7 +391,8 @@ class Program
 		std::cout << "List of Total Emission\n";
 		for (CarbonData d : results)
 		{
-			std::cout << d.totalemission << std::endl;
+			std::cout << d.totalemission << "kg" << std::endl;
+			std::cout << "Date: " << d.DateTime << std::endl;
 		}
 		system("pause");
 		system("cls");
@@ -350,17 +400,21 @@ class Program
 	void menu(sqlite3* db,CarbonData& data)
 	{
 		unsigned int input;
-		std::cout << "Menu\n1.)Calculate your emission\n2.)Statistics\n3.)Exit\n";
+		std::cout << "Menu\n1.)Calculate your emission\n2.)Statistics\n3.)Check all Reccomendations\n4.)Exit\n";
 		std::cin >> input;
 		switch (input)
 		{
 		case 1:
 			system("cls");
-			CalculatingEmisison(db, data);
+			CalculatingEmission(db, data);
 			break;
 		case 2:
 			system("cls");
 			Statistic(db, data);
+			break;
+		case 3:
+			system("cls");
+			all_reccomendation();
 			break;
 		default:
 			return exit(1);
@@ -371,7 +425,7 @@ public:
 
 	int Main()
 	{
-		CarbonData data(0, 0, 0, 0, 0, "", "", "");
+		CarbonData* data = new CarbonData();
 		sqlite3* db;
 		char* zErrMsg = 0;
 		int rc;
@@ -397,7 +451,7 @@ public:
 		Execute(db, sql, zErrMsg);
 
 		std::cout << "CarbonFootprint Calculator\n";
-		menu(db, data);
+		menu(db, *data);
 
 		sqlite3_close(db);
 		return 0;
