@@ -12,13 +12,15 @@ public:
 			totalemission;
 	std::string suggestion;
 	std::string DateTime;
-	CarbonData(int i, double e, double t, double w, double tt, std::string sug, std::string date)
+	std::string vehicletype;
+	CarbonData(int i, double e, double t, double w, double tt,std::string veh, std::string sug, std::string date)
 	{
 		id = i;
 		energy_emission = e;
 		transport_emission = t;
 		waste_emission = w;
 		totalemission = tt;
+		vehicletype = veh;
 		suggestion = sug;
 		DateTime = date;
 	}
@@ -88,17 +90,17 @@ class Program
 
 		double timeOfTravel;
 		char vehicleType;
-		start:
+		/*start:
 		std::cout << "How many times do you go to work, school, or out in a week?\n";
 		std::cin >> daysOfTravelPerMonth;
 		if (daysOfTravelPerMonth > 7) {
 			std::cout << "please enter a number between 1 and 7\n";
-			goto start;
-		}
+			goto start;*/
+		//}
 		std::cout << "How long does the travel take in minutes? ";
 		std::cin >> timeOfTravel;
 		CarType:
-		std::cout << "Please enter the type of vehicle do you often use to go to work:\ng. Gas Car\nd. Diesel Car\nj. Diesel Jeep\nb. Diesel Bus\n ";
+		std::cout << "Please enter the type of vehicle do you often use to go to work:\ng. Gas Car\nd. Diesel Car\nj. Diesel Jeep\nb. Diesel Bus\n";
 		std::cin >> vehicleType;
 
 		vehicleType = toupper(vehicleType);
@@ -121,8 +123,8 @@ class Program
 			std::cout << "Invalid vehicle type. Please enter G, D, J, or B." << std::endl;
 			goto CarType;
 		}
-			std::cout << "Your transport emissions: " << dailyEmissions * (daysOfTravelPerMonth * 4) << " kg of CO2" << std::endl;
-			data.transport_emission = dailyEmissions * (daysOfTravelPerMonth * 4);
+			std::cout << "Your transport emissions: " << (dailyEmissions * 30)/1000 << " kg of CO2" << std::endl;
+			data.transport_emission = (dailyEmissions * 30)/1000;
 	}
 	void CalculateWasteEmission(CarbonData& data){
 
@@ -177,8 +179,8 @@ class Program
 				"as LED bulbs are 85% more efficient than an incandescent bulbs. By doing so you can reduce your CO2 emissions by 500kg"
 				" per year.---\n\n---Use a power strip, a smart plug, or unplug unsused devices. Phantom energy loss accounts about 10% of your household electricity "
 				"use. Phantom loss is the energy loss in devices that is still plugged in even though the devices are powered off. By using smart plugs "
-				"or unplugging devices that isn't in use can reduce your household electricity and reduce over 400kg of CO2 per year.---\n\n ";//5 suggestion
-			energylinks += "https://www.metrobank.com.ph/articles/learn/how-to-save-on-electrical-bills \n https://www.moneymax.ph/lifestyle/articles/home-energy-saving-tips \n"
+				"or unplugging devices that isn't in use can reduce your household electricity and reduce over 400kg of CO2 per year.---\n\n";//5 suggestion
+			energylinks += "https://www.metrobank.com.ph/articles/learn/how-to-save-on-electrical-bills \n \b https://www.moneymax.ph/lifestyle/articles/home-energy-saving-tips \n"
 				" https://www.doe.gov.ph/energy-efficiency/overview \n";
 		}
 		if (data.energy_emission < philippineaverage) {
@@ -212,7 +214,7 @@ class Program
 		std::cout << Suggestion <<" \n sources \n "<<energylinks;
 		data.suggestion = Suggestion;
 	}
-	int CalculatingEmisison(sqlite3* db,CarbonData& data)
+	int CalculatingEmisison(sqlite3* db, CarbonData& data)
 	{
 		int rc;
 		const char* sql;
@@ -223,7 +225,7 @@ class Program
 		CalculateTotalEmission(data);
 		SuggestionFunction(data);
 
-		sql = "INSERT INTO carbondata (energy_emission, transport_emission, waste_emission, total_emission, suggestions, date) VALUEs ( ?, ?, ?, ?, ?, ?);";
+		sql = "INSERT INTO carbondata (energy_emission, transport_emission, waste_emission, total_emission, vehicle_type, suggestions, date) VALUEs ( ?, ?, ?, ?, ?, ?, ?);";
 		rc = sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
 		if (rc != SQLITE_OK) {
 			std::cerr << "SQL error: " << sqlite3_errmsg(db) << std::endl;
@@ -249,12 +251,17 @@ class Program
 			std::cerr << "SQL error: " << sqlite3_errmsg(db) << std::endl;
 			return(-1);
 		}
-		rc = sqlite3_bind_text(stmt, 5, data.suggestion.c_str(), -1, NULL);
+		rc = sqlite3_bind_text(stmt, 5, data.vehicletype.c_str(), -1, NULL);
 		if (rc != SQLITE_OK) {
 			std::cerr << "SQL error: " << sqlite3_errmsg(db) << std::endl;
 			return(-1);
 		}
-		rc = sqlite3_bind_text(stmt, 6, data.DateTime.c_str(), -1, NULL);
+		rc = sqlite3_bind_text(stmt, 6, data.suggestion.c_str(), -1, NULL);
+		if (rc != SQLITE_OK) {
+			std::cerr << "SQL error: " << sqlite3_errmsg(db) << std::endl;
+			return(-1);
+		}
+		rc = sqlite3_bind_text(stmt, 7, data.DateTime.c_str(), -1, NULL);
 		if (rc != SQLITE_OK) {
 			std::cerr << "SQL error: " << sqlite3_errmsg(db) << std::endl;
 			return(-1);
@@ -266,12 +273,13 @@ class Program
 		}
 		else {
 			std::cout << "Record inserted successfully" << std::endl;
-			return 0;
 		}
 		sqlite3_finalize(stmt);
+		system("pause");
+		system("cls");
 		return 0;
 	}
-	std::vector<CarbonData> query_db(sqlite3* db, std::string sql) {
+		std::vector<CarbonData> query_db(sqlite3 * db, std::string sql) {
 		std::vector<CarbonData> results;
 		sqlite3_stmt* stmt;
 		int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, NULL);
@@ -285,9 +293,10 @@ class Program
 			double transport_emission = sqlite3_column_double(stmt, 2);
 			double waste_emission = sqlite3_column_double(stmt, 3);
 			double totalemission = sqlite3_column_double(stmt, 4);
-			std::string suggestion = (char*)sqlite3_column_text(stmt, 5);
-			std::string DateTime = (char*)sqlite3_column_text(stmt, 6);
-			CarbonData cd(id, energy_emission, transport_emission, waste_emission, totalemission, suggestion, DateTime);
+			std::string vehicle_type = (char*)sqlite3_column_text(stmt, 5);
+			std::string suggestion = (char*)sqlite3_column_text(stmt, 6);
+			std::string DateTime = (char*)sqlite3_column_text(stmt, 7);
+			CarbonData cd(id, energy_emission, transport_emission, waste_emission, totalemission, vehicle_type, suggestion, DateTime);
 			results.push_back(cd);
 		}
 		if (rc != SQLITE_DONE) {
@@ -303,6 +312,7 @@ class Program
 		sql = "SELECT * FROM carbondata;";
 		std::vector<CarbonData> results= query_db(db, sql);
 
+		std::cout << "List of Total Emission\n";
 		for (CarbonData d : results)
 		{
 			std::cout << d.totalemission << std::endl;
@@ -324,6 +334,7 @@ class Program
 			Statistic(db, data);
 			break;
 		default:
+			return exit(1);
 			break;
 		}
 	}
@@ -331,7 +342,7 @@ public:
 
 	int Main()
 	{
-		CarbonData data(0, 0, 0, 0, 0, "", "");
+		CarbonData data(0, 0, 0, 0, 0, "", "", "");
 		sqlite3* db;
 		char* zErrMsg = 0;
 		int rc;
@@ -350,6 +361,7 @@ public:
 			"transport_emission DOUBLE NOT NULL," \
 			"waste_emission DOUBLE NOT NULL,"\
 			"total_emission DOUBLE NOT NULL,"\
+			"vehicle_type TEXT NOT NULL,"\
 			"suggestions TEXT,"\
 			"date TEXT NOT NULL);";
 
@@ -357,8 +369,6 @@ public:
 
 		std::cout << "CarbonFootprint Calculator\n";
 		menu(db, data);
-
-		
 
 		sqlite3_close(db);
 		return 0;
@@ -368,6 +378,9 @@ public:
 int main()
 {
 	Program program;
-	program.Main();
+	while (true)
+	{
+		program.Main();
+	}
 	return 0;
 }
