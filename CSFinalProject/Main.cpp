@@ -80,7 +80,7 @@ class Program
 		const double dieselCarSpeed = 29.9;
 		const double dieselJeepneySpeed = 17.57;
 		const double dieselBusSpeed = 14.18;
-		double daysOfTravelPerMonth;
+		//double daysOfTravelPerMonth;
 
 		double gasCarEmissions[] = { 58.1, 49.5, 39.4 };
 		double dieselCarEmissions[] = { 3.0, 2.5, 2.3 };
@@ -109,15 +109,19 @@ class Program
 		timeOfTravel /= 60;
 		if (vehicleType == 'G') {
 			dailyEmissions = calculateDailyEmissions(timeOfTravel, gasCarSpeed, gasCarEmissions);
+			data.vehicletype = "GasCar";
 		}
 		else if (vehicleType == 'D') {
 			dailyEmissions = calculateDailyEmissions(timeOfTravel, dieselCarSpeed, dieselCarEmissions);
+			data.vehicletype = "DieselCar";
 		}
 		else if (vehicleType == 'J') {
 			dailyEmissions = calculateDailyEmissions(timeOfTravel, dieselJeepneySpeed, dieselJeepneyEmissions);
+			data.vehicletype = "DieselJeep";
 		}
 		else if (vehicleType == 'B') {
 			dailyEmissions = calculateDailyEmissions(timeOfTravel, dieselBusSpeed, dieselBusEmissions);
+			data.vehicletype = "DieselBus";
 		}
 		else {
 			std::cout << "Invalid vehicle type. Please enter G, D, J, or B." << std::endl;
@@ -159,6 +163,9 @@ class Program
 	}
 	void CalculateTotalEmission(CarbonData& data){
 		data.totalemission = data.energy_emission + data.transport_emission + data.waste_emission;
+		std::cout << "Energy Emisison: " << data.energy_emission << std::endl;
+		std::cout << "Transport Emisison: " << data.transport_emission << std::endl;
+		std::cout << "Waste Emisison: " << data.waste_emission << std::endl;
 		std::cout << "Your total carbon emission this month: " << data.totalemission << "kg of CO2\n";
 	}
 	void SuggestionFunction(CarbonData& data)
@@ -166,47 +173,60 @@ class Program
 		double philippineaverage = 1200 / 12;
 		std::string Suggestion;
 		std::string energylinks;
-		std::cout << "Suggestion to reduce your monthly carbon emission:\n";
+		std::cout << "Suggestion to reduce your monthly carbon emission:\n";	
 		std::cout << "In Electricity:";
 
-		if (data.energy_emission > philippineaverage)
+		if (data.energy_emission > philippineaverage * .7)
 		{
 			Suggestion += "\n---if you own any Air conditioning at your household we suggest to reduce it's usage to reduce the its carbon emission. "
+
 				"This can reduce your energy use by 10% and reduce your emission by 200kg per year. You can rely on curtains, fans, or natural "
+
 				"ventilation to cool your home instead of using AC.---\n\n---Switch your appliances such as AC, refirgerators, and washing machine to inverter appliances "
+
 				". Inverter appliances use less electricity than their normal counter parts and produce less heat. Inverter appliances can help you reduce energy consumption "
+
 				"by 50% and reduce your CO2 emission by 1200kg per year---\n\n""---if you are currently using on any incandescent light bulbs we reccomend on replacing them with LED bulbs as "
+
 				"as LED bulbs are 85% more efficient than an incandescent bulbs. By doing so you can reduce your CO2 emissions by 500kg"
+
 				" per year.---\n\n---Use a power strip, a smart plug, or unplug unsused devices. Phantom energy loss accounts about 10% of your household electricity "
+
 				"use. Phantom loss is the energy loss in devices that is still plugged in even though the devices are powered off. By using smart plugs "
+
 				"or unplugging devices that isn't in use can reduce your household electricity and reduce over 400kg of CO2 per year.---\n\n";//5 suggestion
-			energylinks += "https://www.metrobank.com.ph/articles/learn/how-to-save-on-electrical-bills \n \b https://www.moneymax.ph/lifestyle/articles/home-energy-saving-tips \n"
+
+			energylinks += "https://www.metrobank.com.ph/articles/learn/how-to-save-on-electrical-bills \n  https://www.moneymax.ph/lifestyle/articles/home-energy-saving-tips \n"
 				" https://www.doe.gov.ph/energy-efficiency/overview \n";
 		}
-		if (data.energy_emission < philippineaverage) {
+		if (data.energy_emission < philippineaverage * .7) {
+			
 			Suggestion += "\n---Installing solar panels around your power your home can reduce your energy consumption therefore your carbon emission. "
+
 				"We suggest to use CBH Solar Light as it offers 120 degrees of ilumination adn 2600 lumens of brghtness and it can also provide "
+
 				"as it can provide 10 hours of light. Using renewable resources can really help you reduce your carbon emission.---\n\n";//1 suggestion
+
 			energylinks += "https://www.doe.gov.ph/energy-efficiency/overview \n";
 		}
 		
-		if (data.transport_emission > philippineaverage) 
+		if (data.transport_emission > philippineaverage * .1) 
 		{
 
 			Suggestion += "";//same here
 		}
-		if(data.transport_emission < philippineaverage)
+		if(data.transport_emission < philippineaverage * .1)
 		{
 
 			Suggestion += "";//same here
 		}
 		//dito ka kalel maggawa lagay mo nalang sa mga colon yung suggestion mo tsaka dapat may sources ka
-		if (data.waste_emission > philippineaverage) 
+		if (data.waste_emission > philippineaverage * .2) 
 		{
 
 			Suggestion += "";//same here
 		}
-		if(data.waste_emission < philippineaverage)
+		if(data.waste_emission < philippineaverage * .2)
 		{
 
 			Suggestion += "";//same here
@@ -214,14 +234,20 @@ class Program
 		std::cout << Suggestion <<" \n sources \n "<<energylinks;
 		data.suggestion = Suggestion;
 	}
+	
 	int CalculatingEmisison(sqlite3* db, CarbonData& data)
 	{
 		int rc;
 		const char* sql;
 		sqlite3_stmt* stmt;
+
+		
 		CalculateEnergyEmission(data);
+		system("cls");
 		CalculateTransportEmission(data);
+		system("cls");
 		CalculateWasteEmission(data);
+		system("cls");
 		CalculateTotalEmission(data);
 		SuggestionFunction(data);
 
@@ -279,7 +305,8 @@ class Program
 		system("cls");
 		return 0;
 	}
-		std::vector<CarbonData> query_db(sqlite3 * db, std::string sql) {
+
+	std::vector<CarbonData> query_db(sqlite3 * db, std::string sql) {
 		std::vector<CarbonData> results;
 		sqlite3_stmt* stmt;
 		int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, NULL);
@@ -317,6 +344,8 @@ class Program
 		{
 			std::cout << d.totalemission << std::endl;
 		}
+		system("pause");
+		system("cls");
 	}
 	void menu(sqlite3* db,CarbonData& data)
 	{
