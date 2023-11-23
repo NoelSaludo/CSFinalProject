@@ -145,7 +145,6 @@ class Program
 		}
 		std::cout << "Your transport emissions: " << (dailyEmissions * 30) / 1000 << " kg of CO2" << std::endl;
 		data.transport_emission = (dailyEmissions * 30) / 1000;
-		data.vehicletype = vehicleType;
 	}
 
 	void CalculateWasteEmission(CarbonData& data) {
@@ -187,11 +186,56 @@ class Program
 		std::cout << "Your total carbon emission this month: " << data.totalemission << "kg of CO2\n";
 	}
 
+	void vehiclesuggestion(CarbonData data, std::string& suggestion, std::string& links, double average)
+	{
+		if (data.transport_emission > average) {
+			std::cout << "Your " << ((data.vehicletype[0] == 'G') ? "Gas Car" :
+				((data.vehicletype[0] == 'D') ? "Diesel Car" :
+					((data.vehicletype[0] == 'J') ? "Diesel Jeepney" : "Diesel Bus")))
+				<< " emissions are high. Consider these recommendations to reduce your carbon footprint:" << std::endl;
+
+
+			if (data.vehicletype[0] == 'G') {
+				suggestion += "- Consider using an electric or hybrid vehicle for reduced emissions. if not, use bicycle\n\n";
+				suggestion += "- Opt for efficient driving techniques like maintaining a steady speed and reducing idling time.\n\n";
+				suggestion += "- Keep your vehicle well-tuned will minimise its environmental impact by reducing running costs and extending the vehicle’s life.\n\n";
+				suggestion += "- Plan and combine errands to reduce the number of trips made.\n\n";
+				suggestion += "- Look after your tyres, good tyres can reduce fuel consumption.\n\n";
+				links += " https://www.greenvehicleguide.gov.au/pages/UnderstandingEmissions/TipsToReduceYourEmissions \n\n";
+			}
+			else if (data.vehicletype[0] == 'D') {
+				suggestion += "- Use synthetic or quality diesel or biodiesel for lower emissions.\n\n";
+				suggestion += "- Ensure regular maintenance and tune-ups to optimize fuel efficiency.\n\n";
+				suggestion += "- Optimize combustion process .\n\n";
+				suggestion += "- Reduce unnecessary weight in your vehicle to improve fuel economy.\n\n";
+				suggestion += "- Use aftertreatment systems to treat the exhaust gas after it leaves the engine. \n\n";
+				links += " https://www.linkedin.com/advice/0/how-can-you-reduce-diesel-engine-emissions#:~:text=To%20reduce%20diesel%20engine%20emissions%2C%20you%20should%20use%20fuel%20that,fuel%20properly%20to%20prevent%20degradation. \n\n";
+			}
+			else if (data.vehicletype[0] == 'J') {
+				suggestion += "- Encourage efficient driving habits among drivers to conserve fuel.\n\n";
+				suggestion += "- Regularly service and maintain the engine to improve efficiency.\n\n";
+				suggestion += "- Consider replacing older vehicles with newer, more fuel-efficient models.\n\n";
+				suggestion += "- Opt for routes with less traffic to minimize fuel consumption.\n\n";
+				suggestion += "- Promote the use of alternative transportation for non-essential trips.\n\n";
+			}
+			else if (data.vehicletype[0] == 'B') {
+				suggestion += "- Optimize bus routes to minimize travel time and fuel consumption.\n\n";
+				suggestion += "- Promote the use of hybrid or electric buses in the fleet.\n\n";
+				suggestion += "- Encourage the use of public transportation by providing incentives.\n\n";
+				suggestion += "- Implement driver training programs for fuel-efficient driving techniques.\n\n";
+				suggestion += "- Improve infrastructure to reduce traffic congestion and enhance bus efficiency.\n\n";
+			}
+		}
+		else {
+			suggestion += "Congrats on having a low carbon emission when travelling please keep it up\n\n";
+		}
+	}
 	void SuggestionFunction(CarbonData& data)
 	{
 		double philippineaverage = 1200 / 12;
 		std::string Suggestion;
 		std::string energylinks;
+		std::string transportlinks;
 		std::cout << "Suggestion to reduce your monthly carbon emission:\n";
 		std::cout << "In Electricity:";
 
@@ -215,7 +259,7 @@ class Program
 
 				"or unplugging devices that isn't in use can reduce your household electricity and reduce over 400kg of CO2 per year.---\n\n";//5 suggestion
 
-			energylinks += "https://www.metrobank.com.ph/articles/learn/how-to-save-on-electrical-bills \n  https://www.moneymax.ph/lifestyle/articles/home-energy-saving-tips \n"
+			energylinks += " https://www.metrobank.com.ph/articles/learn/how-to-save-on-electrical-bills \n  https://www.moneymax.ph/lifestyle/articles/home-energy-saving-tips \n"
 				" https://www.doe.gov.ph/energy-efficiency/overview \n";
 		}
 		if (data.energy_emission < philippineaverage * .7) {
@@ -225,18 +269,11 @@ class Program
 
 				"as it can provide 10 hours of light. Using renewable resources can really help you reduce your carbon emission.---\n\n";//1 suggestion
 
-			energylinks += "https://www.doe.gov.ph/energy-efficiency/overview \n";
+			energylinks += " https://www.doe.gov.ph/energy-efficiency/overview \n";
 		}
 
-		if (data.transport_emission > philippineaverage * .01)
-		{
-			Suggestion += "";//same here
-		}
-		if (data.transport_emission < philippineaverage * .01)
-		{
-			Suggestion += "";//same here
-		}
-		//dito ka kalel maggawa lagay mo nalang sa mga colon yung suggestion mo tsaka dapat may sources ka
+		vehiclesuggestion(data, Suggestion, transportlinks, philippineaverage);
+
 		if (data.waste_emission > philippineaverage * .2)
 		{
 			Suggestion += "";//same here
@@ -245,7 +282,7 @@ class Program
 		{
 			Suggestion += "";//same here
 		}
-		std::cout << Suggestion << " \n sources \n " << energylinks;
+		std::cout << Suggestion << " \n sources \n " << energylinks << std::endl << std::endl<< transportlinks;
 		data.suggestion = Suggestion;
 	}
 
@@ -443,7 +480,7 @@ class Program
 				if (pair.first == inputstring) {
 					std::cout << "Date: " << pair.first << std::endl << "Total Emision: " << pair.second.totalemission << "kg" << std::endl;
 					std::cout << "Energy Emission: " << pair.second.energy_emission << "kg" << std::endl;
-					std::cout << "Vehicle Type: " << pair.second.vehicletype << "kg" << std::endl;
+					std::cout << "Vehicle Type: " << pair.second.vehicletype << std::endl;
 					std::cout << "Transport Emission: " << pair.second.transport_emission << "kg" << std::endl;
 					std::cout << "Waste Emission: " << pair.second.waste_emission << "kg" << std::endl;
 					continue;
@@ -461,7 +498,7 @@ class Program
 			{
 				std::cout << "Date: " << pair.first << std::endl << "Total Emision: " << pair.second.totalemission << "kg" << std::endl;
 				std::cout << "Energy Emission: " << pair.second.energy_emission << "kg" << std::endl;
-				std::cout << "Vehicle Type: " << pair.second.vehicletype << "kg" << std::endl;
+				std::cout << "Vehicle Type: " << pair.second.vehicletype << std::endl;
 				std::cout << "Transport Emission: " << pair.second.transport_emission << "kg" << std::endl;
 				std::cout << "Waste Emission: " << pair.second.waste_emission << "kg" << std::endl;
 			}
