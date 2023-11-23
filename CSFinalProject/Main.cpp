@@ -1,6 +1,6 @@
 #include "Main.h"
 
-class CarbonData 
+class CarbonData
 {
 	std::string getCurrentDate() {
 		auto now = std::chrono::system_clock::now();
@@ -22,13 +22,13 @@ class CarbonData
 public:
 	int id;
 	double energy_emission,
-	       transport_emission,
-	       waste_emission,
-			totalemission;
+		transport_emission,
+		waste_emission,
+		totalemission;
 	std::string suggestion;
 	std::string DateTime = getCurrentDate();
 	std::string vehicletype;
-	CarbonData(int i = 0, double e = 0, double t = 0, double w=0, double tt=0,std::string veh="", std::string sug="")
+	CarbonData(int i = 0, double e = 0, double t = 0, double w = 0, double tt = 0, std::string veh = "", std::string sug = "")
 	{
 		id = i;
 		energy_emission = e;
@@ -38,8 +38,6 @@ public:
 		vehicletype = veh;
 		suggestion = sug;
 	}
-
-	
 };//yaan mo muna
 
 class Program
@@ -61,7 +59,7 @@ class Program
 		}
 	}
 
-	void gettime(CarbonData &data) {
+	void gettime(CarbonData& data) {
 		auto start = std::chrono::system_clock::now();
 		auto legacyStart = std::chrono::system_clock::to_time_t(start);
 		char tmBuff[30];
@@ -83,7 +81,7 @@ class Program
 		}
 	}
 
-	void CalculateEnergyEmission(CarbonData &data)
+	void CalculateEnergyEmission(CarbonData& data)
 	{
 		double KWH;
 		std::cout << "---------------------------------------------\n";
@@ -106,7 +104,6 @@ class Program
 		double dieselJeepneyEmissions[] = { 2.9, 2.5, 2.3 };
 		double dieselBusEmissions[] = { 11.3, 12.4, 11.3 };
 
-
 		double timeOfTravel;
 		char vehicleType;
 		/*start:
@@ -115,10 +112,10 @@ class Program
 		if (daysOfTravelPerMonth > 7) {
 			std::cout << "please enter a number between 1 and 7\n";
 			goto start;*/
-		//}
+			//}
 		std::cout << "How long does the travel take in minutes? ";
 		std::cin >> timeOfTravel;
-		CarType:
+	CarType:
 		std::cout << "Please enter the type of vehicle do you often use to go to work:\ng. Gas Car\nd. Diesel Car\nj. Diesel Jeep\nb. Diesel Bus\n";
 		std::cin >> vehicleType;
 
@@ -146,13 +143,12 @@ class Program
 			std::cout << "Invalid vehicle type. Please enter G, D, J, or B." << std::endl;
 			goto CarType;
 		}
-			std::cout << "Your transport emissions: " << (dailyEmissions * 30)/1000 << " kg of CO2" << std::endl;
-			data.transport_emission = (dailyEmissions * 30)/1000;
-			data.vehicletype = vehicleType;
+		std::cout << "Your transport emissions: " << (dailyEmissions * 30) / 1000 << " kg of CO2" << std::endl;
+		data.transport_emission = (dailyEmissions * 30) / 1000;
+		data.vehicletype = vehicleType;
 	}
 
-	void CalculateWasteEmission(CarbonData& data){
-
+	void CalculateWasteEmission(CarbonData& data) {
 		double fdw, pw, gw, ww, tw, waste,
 			docf, mcf, f, gwp, fd,
 			paper, garden, wood, textile;
@@ -183,7 +179,7 @@ class Program
 		data.waste_emission = waste;
 	}
 
-	void CalculateTotalEmission(CarbonData& data){
+	void CalculateTotalEmission(CarbonData& data) {
 		data.totalemission = data.energy_emission + data.transport_emission + data.waste_emission;
 		std::cout << "Energy Emisison: " << data.energy_emission << std::endl;
 		std::cout << "Transport Emisison: " << data.transport_emission << std::endl;
@@ -196,7 +192,7 @@ class Program
 		double philippineaverage = 1200 / 12;
 		std::string Suggestion;
 		std::string energylinks;
-		std::cout << "Suggestion to reduce your monthly carbon emission:\n";	
+		std::cout << "Suggestion to reduce your monthly carbon emission:\n";
 		std::cout << "In Electricity:";
 
 		if (data.energy_emission > philippineaverage * .7)
@@ -223,7 +219,6 @@ class Program
 				" https://www.doe.gov.ph/energy-efficiency/overview \n";
 		}
 		if (data.energy_emission < philippineaverage * .7) {
-			
 			Suggestion += "\n---Installing solar panels around your power your home can reduce your energy consumption therefore your carbon emission. "
 
 				"We suggest to use CBH Solar Light as it offers 120 degrees of ilumination adn 2600 lumens of brghtness and it can also provide "
@@ -232,39 +227,34 @@ class Program
 
 			energylinks += "https://www.doe.gov.ph/energy-efficiency/overview \n";
 		}
-		
-		if (data.transport_emission > philippineaverage * .01) 
-		{
 
+		if (data.transport_emission > philippineaverage * .01)
+		{
 			Suggestion += "";//same here
 		}
-		if(data.transport_emission < philippineaverage * .01)
+		if (data.transport_emission < philippineaverage * .01)
 		{
-
 			Suggestion += "";//same here
 		}
 		//dito ka kalel maggawa lagay mo nalang sa mga colon yung suggestion mo tsaka dapat may sources ka
-		if (data.waste_emission > philippineaverage * .2) 
+		if (data.waste_emission > philippineaverage * .2)
 		{
-
 			Suggestion += "";//same here
 		}
-		if(data.waste_emission < philippineaverage * .2)
+		if (data.waste_emission < philippineaverage * .2)
 		{
-
 			Suggestion += "";//same here
 		}
-		std::cout << Suggestion <<" \n sources \n "<<energylinks;
+		std::cout << Suggestion << " \n sources \n " << energylinks;
 		data.suggestion = Suggestion;
 	}
-	
+
 	int CalculatingEmission(sqlite3* db, CarbonData& data)
 	{
 		int rc;
 		const char* sql;
 		sqlite3_stmt* stmt;
 
-		
 		CalculateEnergyEmission(data);
 		system("cls");
 		CalculateTransportEmission(data);
@@ -329,7 +319,7 @@ class Program
 		return 0;
 	}
 
-	std::map<std::string, CarbonData> query_db(sqlite3 * db, std::string sql) {
+	std::map<std::string, CarbonData> query_db(sqlite3* db, std::string sql) {
 		std::map<std::string, CarbonData> results;
 		sqlite3_stmt* stmt;
 		int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, NULL);
@@ -355,6 +345,7 @@ class Program
 		sqlite3_finalize(stmt);
 		return results;
 	}
+
 	void EnergyReccomendation()
 	{
 		std::cout << "Reducing energy consumption and emission\n\n";
@@ -370,28 +361,34 @@ class Program
 			". Inverter appliances use less electricity than their normal counter parts and produce less heat. Inverter appliances can help you reduce energy consumption "
 
 			"by 50% and reduce your CO2 emission by 1200kg per year---\n\n"
-			
+
 			"https://www.metrobank.com.ph/articles/learn/how-to-save-on-electrical-bills \n\n";
 		std::cout << "---if you are currently using on any incandescent light bulbs we reccomend on replacing them with LED bulbs as "
 
 			"as LED bulbs are 85% more efficient than an incandescent bulbs. By doing so you can reduce your CO2 emissions by 500kg"
 
 			" per year.---\n\n"
-			
+
 			"https://www.metrobank.com.ph/articles/learn/how-to-save-on-electrical-bills \n\n";
 		std::cout << "---Use a power strip, a smart plug, or unplug unsused devices. Phantom energy loss accounts about 10% of your household electricity "
 
 			"use. Phantom loss is the energy loss in devices that is still plugged in even though the devices are powered off. By using smart plugs "
 
 			"or unplugging devices that isn't in use can reduce your household electricity and reduce over 400kg of CO2 per year.---\n\n"
-			
+
 			"https://www.metrobank.com.ph/articles/learn/how-to-save-on-electrical-bills \n\n";
 		std::cout << "---Installing solar panels around your power your home can reduce your energy consumption therefore your carbon emission. "
 
 			"We suggest to use CBH Solar Light as it offers 120 degrees of ilumination adn 2600 lumens of brghtness and it can also provide "
 
 			"as it can provide 10 hours of light. Using renewable resources can really help you reduce your carbon emission.---\n\n";
+	}
 
+	void TransportReccomendation()
+	{
+	}
+	void WasteReccomendation()
+	{
 	}
 	int all_reccomendation()
 	{
@@ -407,6 +404,12 @@ class Program
 			system("cls");
 			EnergyReccomendation();
 			break;
+		case 2:
+			system("cls");
+			break;
+		case 3:
+			system("cls");
+			break;
 		case 4:
 			system("cls");
 			Main();
@@ -414,7 +417,6 @@ class Program
 		default:
 			break;
 		}
-
 
 		system("pause");
 		system("cls");
@@ -424,7 +426,7 @@ class Program
 	{
 		const char* sql;
 		int input;
-		std:: string inputstring;
+		std::string inputstring;
 		sql = "SELECT * FROM carbondata;";
 		std::map<std::string, CarbonData> carbondata = query_db(db, sql);
 
@@ -433,13 +435,13 @@ class Program
 		switch (input)
 		{
 		case 1:
-			TryAgain:
+		TryAgain:
 			std::cout << "Enter a date (yyy-mm-dd): ";
 			std::cin >> inputstring;
 			for (const auto& pair : carbondata)
 			{
 				if (pair.first == inputstring) {
-					std::cout << "Date: " << pair.first << std::endl << "Total Emision: " << pair.second.totalemission << "kg" <<std::endl;
+					std::cout << "Date: " << pair.first << std::endl << "Total Emision: " << pair.second.totalemission << "kg" << std::endl;
 					std::cout << "Energy Emission: " << pair.second.energy_emission << "kg" << std::endl;
 					std::cout << "Vehicle Type: " << pair.second.vehicletype << "kg" << std::endl;
 					std::cout << "Transport Emission: " << pair.second.transport_emission << "kg" << std::endl;
@@ -469,7 +471,7 @@ class Program
 		system("pause");
 		system("cls");
 	}
-	void menu(sqlite3* db,CarbonData& data)
+	void menu(sqlite3* db, CarbonData& data)
 	{
 		unsigned int input;
 		std::cout << char(218);      for (int i = 0; i < 33; i++) { std::cout << char(196); }      std::cout << char(191) << std::endl;
