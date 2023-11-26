@@ -306,6 +306,7 @@ class Program
 		}
 		std::cout << Suggestion << " \n sources \n " << energylinks << std::endl << std::endl << transportlinks << std::endl << std::endl << wastelinks << std::endl;
 		data.suggestion = Suggestion;
+		std::cout << wasteaverage + wasteaverage * .15 << std::endl << philippineaverage * 0.05;
 	}
 
 	int CalculatingEmission(sqlite3* db, CarbonData& data)
