@@ -188,12 +188,11 @@ class Program
 
 	void vehiclesuggestion(CarbonData data, std::string& suggestion, std::string& links, double average)
 	{
-		if (data.transport_emission > average) {
+		if (data.transport_emission > average * .01) {
 			std::cout << "Your " << ((data.vehicletype[0] == 'G') ? "Gas Car" :
 				((data.vehicletype[0] == 'D') ? "Diesel Car" :
 					((data.vehicletype[0] == 'J') ? "Diesel Jeepney" : "Diesel Bus")))
 				<< " emissions are high. Consider these recommendations to reduce your carbon footprint:" << std::endl;
-
 
 			if (data.vehicletype[0] == 'G') {
 				suggestion += "- Consider using an electric or hybrid vehicle for reduced emissions. if not, use bicycle\n\n";
@@ -230,12 +229,26 @@ class Program
 			suggestion += "Congrats on having a low carbon emission when travelling please keep it up\n\n";
 		}
 	}
+	void addRandomSuggestion(std::string arr[], int n, std::string& suggestions) {
+		for (int i = 0; i < 3; i++) {
+			int randomIndex = rand() % n;
+			suggestions += arr[randomIndex];
+		}
+	}
 	void SuggestionFunction(CarbonData& data)
 	{
-		double philippineaverage = 1200 / 12;
+		double philippineaverage = 1180 / 12, wasteaverage = philippineaverage * .2;
 		std::string Suggestion;
 		std::string energylinks;
 		std::string transportlinks;
+		std::string wastelinks;
+		std::string wastesuggestions[5] = {
+			"---Go Paperless---\n\n",
+			"---Invest in Durable, Sustainable Products---\n\n",
+			"---Reuse When Possible---\n\n",
+			"---Consider Waste-To-Energy Programs---\n\n",
+			"---Recycle Waste---\n\n"
+		};
 		std::cout << "Suggestion to reduce your monthly carbon emission:\n";
 		std::cout << "In Electricity:";
 
@@ -274,15 +287,24 @@ class Program
 
 		vehiclesuggestion(data, Suggestion, transportlinks, philippineaverage);
 
-		if (data.waste_emission > philippineaverage * .2)
+		if (data.waste_emission > wasteaverage + wasteaverage * .15)
 		{
-			Suggestion += "";//same here
+			for (std::string wastesug : wastesuggestions)
+				Suggestion += wastesug;//same here
+
+			wastelinks += "https://archive.epa.gov/climatechange/kids/solutions/actions/waste.html \n";
 		}
-		if (data.waste_emission < philippineaverage * .2)
+		else if (data.waste_emission <= wasteaverage + wasteaverage * .1 && data.waste_emission >= wasteaverage - wasteaverage * .1)
 		{
-			Suggestion += "";//same here
+			addRandomSuggestion(wastesuggestions, 5, Suggestion);
+			wastelinks += "https://archive.epa.gov/climatechange/kids/solutions/actions/waste.html \n";
 		}
-		std::cout << Suggestion << " \n sources \n " << energylinks << std::endl << std::endl<< transportlinks;
+		else if (data.waste_emission < wasteaverage - wasteaverage * .15)
+		{
+			Suggestion += "---Maintain this amount of waste and emission and help in implementing the 3Rs---\n\n";//same here
+			wastelinks += "https://archive.epa.gov/climatechange/kids/solutions/actions/waste.html \n";
+		}
+		std::cout << Suggestion << " \n sources \n " << energylinks << std::endl << std::endl << transportlinks << std::endl << std::endl << wastelinks << std::endl;
 		data.suggestion = Suggestion;
 	}
 
@@ -423,9 +445,46 @@ class Program
 
 	void TransportReccomendation()
 	{
+		std::cout << "We reccomend for gas car to do the following: \n";
+		std::cout << "- Consider using an electric or hybrid vehicle for reduced emissions. if not, use bicycle\n\n";
+		std::cout << "- Opt for efficient driving techniques like maintaining a steady speed and reducing idling time.\n\n";
+		std::cout << "- Keep your vehicle well-tuned will minimise its environmental impact by reducing running costs and extending the vehicle’s life.\n\n";
+		std::cout << "- Plan and combine errands to reduce the number of trips made.\n\n";
+		std::cout << "- Look after your tyres, good tyres can reduce fuel consumption.\n\n";
+		std::cout << " https://www.greenvehicleguide.gov.au/pages/UnderstandingEmissions/TipsToReduceYourEmissions \n\n";
+		std::cout << "We reccomend for diesel car to do the following: \n";
+		std::cout << "- Use synthetic or quality diesel or biodiesel for lower emissions.\n\n";
+		std::cout << "- Ensure regular maintenance and tune-ups to optimize fuel efficiency.\n\n";
+		std::cout << "- Optimize combustion process .\n\n";
+		std::cout << "- Reduce unnecessary weight in your vehicle to improve fuel economy.\n\n";
+		std::cout << "- Use aftertreatment systems to treat the exhaust gas after it leaves the engine. \n\n";
+		std::cout << " https://www.linkedin.com/advice/0/how-can-you-reduce-diesel-engine-emissions#:~:text=To%20reduce%20diesel%20engine%20emissions%2C%20you%20should%20use%20fuel%20that,fuel%20properly%20to%20prevent%20degradation. \n\n";
+		std::cout << "We reccomend for diesel jeep to do the following: \n";
+		std::cout << "- Encourage efficient driving habits among drivers to conserve fuel.\n\n";
+		std::cout << "- Regularly service and maintain the engine to improve efficiency.\n\n";
+		std::cout << "- Consider replacing older vehicles with newer, more fuel-efficient models.\n\n";
+		std::cout << "- Opt for routes with less traffic to minimize fuel consumption.\n\n";
+		std::cout << "- Promote the use of alternative transportation for non-essential trips.\n\n";
+		std::cout << "We reccomend for diesel bus to do the following: \n";
+		std::cout << "- Optimize bus routes to minimize travel time and fuel consumption.\n\n";
+		std::cout << "- Promote the use of hybrid or electric buses in the fleet.\n\n";
+		std::cout << "- Encourage the use of public transportation by providing incentives.\n\n";
+		std::cout << "- Implement driver training programs for fuel-efficient driving techniques.\n\n";
+		std::cout << "- Improve infrastructure to reduce traffic congestion and enhance bus efficiency.\n\n";
 	}
 	void WasteReccomendation()
 	{
+		std::string wastesuggestions[5] = {
+			"---Go Paperless---\n\n",
+			"---Invest in Durable, Sustainable Products---\n\n",
+			"---Reuse When Possible---\n\n",
+			"---Consider Waste-To-Energy Programs---\n\n",
+			"---Recycle Waste---\n\n"
+		};
+
+		for (std::string sentence : wastesuggestions)
+			std::cout << sentence;
+		std::cout << "https://archive.epa.gov/climatechange/kids/solutions/actions/waste.html \n";
 	}
 	int all_reccomendation()
 	{
@@ -443,9 +502,11 @@ class Program
 			break;
 		case 2:
 			system("cls");
+			TransportReccomendation();
 			break;
 		case 3:
 			system("cls");
+			WasteReccomendation();
 			break;
 		case 4:
 			system("cls");
@@ -525,8 +586,8 @@ class Program
 		std::cout << char(179) << " 3) View suggestions and sources " << char(179) << std::endl;
 		std::cout << char(195);      for (int i = 0; i < 33; i++) { std::cout << char(196); }      std::cout << char(180) << std::endl;
 		std::cout << char(179) << " 4) Exit                         " << char(179) << std::endl;
-		std::cout << char(192);      for (int i = 0; i < 33; i++) { std::cout << char(196); }      std::cout << char(217) << std::endl << " ";
-
+		std::cout << char(192);      for (int i = 0; i < 33; i++) { std::cout << char(196); }      std::cout << char(217) << std::endl;
+		std::cout << "Enter your option: ";
 		std::cin >> input;
 		switch (input)
 		{
