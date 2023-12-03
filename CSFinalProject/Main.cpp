@@ -84,12 +84,11 @@ class Program
 	void CalculateEnergyEmission(CarbonData& data)
 	{
 		double KWH;
-		std::cout << "---------------------------------------------\n";
+		std::cout << "Calculating emission by electricity consumption\n";
 		std::cout << "Please check your Electricity Bill and find KWH used\nEnter KWH : ";
 		std::cin >> KWH;
 		KWH = KWH * 0.6032;
 		data.energy_emission = KWH;
-		std::cout << "Your energy emission: " << data.energy_emission << "kg of CO2\n";
 	}
 
 	void CalculateTransportEmission(CarbonData& data) {
@@ -113,6 +112,7 @@ class Program
 			std::cout << "please enter a number between 1 and 7\n";
 			goto start;*/
 			//}
+		std::cout << "Calculating emission using transportation\n";
 		std::cout << "How long does the travel take in minutes? ";
 		std::cin >> timeOfTravel;
 	CarType:
@@ -143,15 +143,14 @@ class Program
 			std::cout << "Invalid vehicle type. Please enter G, D, J, or B." << std::endl;
 			goto CarType;
 		}
-		std::cout << "Your transport emissions: " << (dailyEmissions * 30) / 1000 << " kg of CO2" << std::endl;
-		data.transport_emission = (dailyEmissions * 30) / 1000;
+		data.transport_emission = dailyEmissions;
 	}
 
 	void CalculateWasteEmission(CarbonData& data) {
 		double fdw, pw, gw, ww, tw, waste,
 			docf, mcf, f, gwp, fd,
 			paper, garden, wood, textile;
-
+		std::cout << "Calculating emission by waste produced\n";
 		std::cout << "Input the mass(kg) per month of the waste in terms of: \n" << "Food waste: ";
 		std::cin >> fdw;
 		std::cout << "Paper: ";
@@ -174,7 +173,6 @@ class Program
 		textile = tw * 0.24 * 0.77 * docf * mcf * f * gwp;
 		waste = fd + paper + garden + wood + textile;
 
-		std::cout << "Your waste emission is: " << waste << " kg of CO2.\n";
 		data.waste_emission = waste;
 	}
 
@@ -185,45 +183,47 @@ class Program
 		std::cout << "Waste Emisison: " << data.waste_emission << std::endl;
 		std::cout << "Your total carbon emission this month: " << data.totalemission << "kg of CO2\n";
 	}
+	void suggestionByVehicleType(CarbonData data,std::string& suggestion, std::string& links){
 
-	void vehiclesuggestion(CarbonData data, std::string& suggestion, std::string& links, double average)
+		if (data.vehicletype[0] == 'G') {
+			suggestion += "- Consider using an electric or hybrid vehicle for reduced emissions. if not, use bicycle\n\n";
+			suggestion += "- Opt for efficient driving techniques like maintaining a steady speed and reducing idling time.\n\n";
+			suggestion += "- Keep your vehicle well-tuned will minimise its environmental impact by reducing running costs and extending the vehicle’s life.\n\n";
+			suggestion += "- Plan and combine errands to reduce the number of trips made.\n\n";
+			suggestion += "- Look after your tyres, good tyres can reduce fuel consumption.\n\n";
+			links += " https://www.greenvehicleguide.gov.au/pages/UnderstandingEmissions/TipsToReduceYourEmissions \n\n";
+		}
+		else if (data.vehicletype[0] == 'D') {
+			suggestion += "- Use synthetic or quality diesel or biodiesel for lower emissions.\n\n";
+			suggestion += "- Ensure regular maintenance and tune-ups to optimize fuel efficiency.\n\n";
+			suggestion += "- Optimize combustion process .\n\n";
+			suggestion += "- Reduce unnecessary weight in your vehicle to improve fuel economy.\n\n";
+			suggestion += "- Use aftertreatment systems to treat the exhaust gas after it leaves the engine. \n\n";
+			links += " https://www.linkedin.com/advice/0/how-can-you-reduce-diesel-engine-emissions#:~:text=To%20reduce%20diesel%20engine%20emissions%2C%20you%20should%20use%20fuel%20that,fuel%20properly%20to%20prevent%20degradation. \n\n";
+		}
+		else if (data.vehicletype[0] == 'J') {
+			suggestion += "- Encourage efficient driving habits among drivers to conserve fuel.\n\n";
+			suggestion += "- Regularly service and maintain the engine to improve efficiency.\n\n";
+			suggestion += "- Consider replacing older vehicles with newer, more fuel-efficient models.\n\n";
+			suggestion += "- Opt for routes with less traffic to minimize fuel consumption.\n\n";
+			suggestion += "- Promote the use of alternative transportation for non-essential trips.\n\n";
+		}
+		else if (data.vehicletype[0] == 'B') {
+			suggestion += "- Optimize bus routes to minimize travel time and fuel consumption.\n\n";
+			suggestion += "- Promote the use of hybrid or electric buses in the fleet.\n\n";
+			suggestion += "- Encourage the use of public transportation by providing incentives.\n\n";
+			suggestion += "- Implement driver training programs for fuel-efficient driving techniques.\n\n";
+			suggestion += "- Improve infrastructure to reduce traffic congestion and enhance bus efficiency.\n\n";
+		}
+	}
+	void vehiclesuggestion(CarbonData data, std::string& suggestion, std::string& links,const double average)
 	{
-		if (data.transport_emission > average * .01) {
+		if (data.transport_emission > average * .1) {
 			std::cout << "Your " << ((data.vehicletype[0] == 'G') ? "Gas Car" :
 				((data.vehicletype[0] == 'D') ? "Diesel Car" :
 					((data.vehicletype[0] == 'J') ? "Diesel Jeepney" : "Diesel Bus")))
 				<< " emissions are high. Consider these recommendations to reduce your carbon footprint:" << std::endl;
-
-			if (data.vehicletype[0] == 'G') {
-				suggestion += "- Consider using an electric or hybrid vehicle for reduced emissions. if not, use bicycle\n\n";
-				suggestion += "- Opt for efficient driving techniques like maintaining a steady speed and reducing idling time.\n\n";
-				suggestion += "- Keep your vehicle well-tuned will minimise its environmental impact by reducing running costs and extending the vehicle’s life.\n\n";
-				suggestion += "- Plan and combine errands to reduce the number of trips made.\n\n";
-				suggestion += "- Look after your tyres, good tyres can reduce fuel consumption.\n\n";
-				links += " https://www.greenvehicleguide.gov.au/pages/UnderstandingEmissions/TipsToReduceYourEmissions \n\n";
-			}
-			else if (data.vehicletype[0] == 'D') {
-				suggestion += "- Use synthetic or quality diesel or biodiesel for lower emissions.\n\n";
-				suggestion += "- Ensure regular maintenance and tune-ups to optimize fuel efficiency.\n\n";
-				suggestion += "- Optimize combustion process .\n\n";
-				suggestion += "- Reduce unnecessary weight in your vehicle to improve fuel economy.\n\n";
-				suggestion += "- Use aftertreatment systems to treat the exhaust gas after it leaves the engine. \n\n";
-				links += " https://www.linkedin.com/advice/0/how-can-you-reduce-diesel-engine-emissions#:~:text=To%20reduce%20diesel%20engine%20emissions%2C%20you%20should%20use%20fuel%20that,fuel%20properly%20to%20prevent%20degradation. \n\n";
-			}
-			else if (data.vehicletype[0] == 'J') {
-				suggestion += "- Encourage efficient driving habits among drivers to conserve fuel.\n\n";
-				suggestion += "- Regularly service and maintain the engine to improve efficiency.\n\n";
-				suggestion += "- Consider replacing older vehicles with newer, more fuel-efficient models.\n\n";
-				suggestion += "- Opt for routes with less traffic to minimize fuel consumption.\n\n";
-				suggestion += "- Promote the use of alternative transportation for non-essential trips.\n\n";
-			}
-			else if (data.vehicletype[0] == 'B') {
-				suggestion += "- Optimize bus routes to minimize travel time and fuel consumption.\n\n";
-				suggestion += "- Promote the use of hybrid or electric buses in the fleet.\n\n";
-				suggestion += "- Encourage the use of public transportation by providing incentives.\n\n";
-				suggestion += "- Implement driver training programs for fuel-efficient driving techniques.\n\n";
-				suggestion += "- Improve infrastructure to reduce traffic congestion and enhance bus efficiency.\n\n";
-			}
+			suggestionByVehicleType(data, suggestion, links);
 		}
 		else {
 			suggestion += "Congrats on having a low carbon emission when travelling please keep it up\n\n";
@@ -250,11 +250,11 @@ class Program
 			"---Recycle Waste---\n\n"
 		};
 		std::cout << "Suggestion to reduce your monthly carbon emission:\n";
-		std::cout << "In Electricity:";
+		std::cout << "In Electricity:\n\n";
 
 		if (data.energy_emission > philippineaverage * .7)
 		{
-			Suggestion += "\n---if you own any Air conditioning at your household we suggest to reduce it's usage to reduce the its carbon emission. "
+			Suggestion += "---if you own any Air conditioning at your household we suggest to reduce it's usage to reduce the its carbon emission. "
 
 				"This can reduce your energy use by 10% and reduce your emission by 200kg per year. You can rely on curtains, fans, or natural "
 
@@ -276,7 +276,7 @@ class Program
 				" https://www.doe.gov.ph/energy-efficiency/overview \n";
 		}
 		if (data.energy_emission < philippineaverage * .7) {
-			Suggestion += "\n---Installing solar panels around your power your home can reduce your energy consumption therefore your carbon emission. "
+			Suggestion += "---Installing solar panels around your power your home can reduce your energy consumption therefore your carbon emission. "
 
 				"We suggest to use CBH Solar Light as it offers 120 degrees of ilumination adn 2600 lumens of brghtness and it can also provide "
 
@@ -284,8 +284,11 @@ class Program
 
 			energylinks += " https://www.doe.gov.ph/energy-efficiency/overview \n";
 		}
+		std::cout << "For Transport: \n\n";
 
 		vehiclesuggestion(data, Suggestion, transportlinks, philippineaverage);
+		
+		std::cout << "For Waste: \n\n";
 
 		if (data.waste_emission > wasteaverage + wasteaverage * .15)
 		{
@@ -306,7 +309,6 @@ class Program
 		}
 		std::cout << Suggestion << " \n sources \n " << energylinks << std::endl << std::endl << transportlinks << std::endl << std::endl << wastelinks << std::endl;
 		data.suggestion = Suggestion;
-		std::cout << wasteaverage + wasteaverage * .15 << std::endl << philippineaverage * 0.05;
 	}
 
 	int CalculatingEmission(sqlite3* db, CarbonData& data)
@@ -523,19 +525,23 @@ class Program
 	}
 	void Statistic(sqlite3* db, CarbonData& data)
 	{
+	Pick:
+		int rc;
 		const char* sql;
+		char* zErrMsg = 0;
+		std::string dataToDelete;
 		int input;
+		char cinput;
 		std::string inputstring;
 		sql = "SELECT * FROM carbondata;";
 		std::map<std::string, CarbonData> carbondata = query_db(db, sql);
-
-		std::cout << "Which do you want to access?\n1.) Certain Record\n2.) Get all record\n";
+		std::cout << "Which do you want to access?\n1.) Certain Record\n2.) Get all record\n3.) Delete a record\n4.) Delete all Record\n";
 		std::cin >> input;
 		switch (input)
 		{
 		case 1:
 		TryAgain:
-			std::cout << "Enter a date (yyy-mm-dd): ";
+			std::cout << "Enter a date (yyyy-mm-dd): ";
 			std::cin >> inputstring;
 			for (const auto& pair : carbondata)
 			{
@@ -547,6 +553,7 @@ class Program
 					std::cout << "Waste Emission: " << pair.second.waste_emission << "kg" << std::endl;
 					continue;
 				}
+				std::cout << "\n";
 			}
 			std::cout << "Find another one? (y/N): ";
 			std::cin >> inputstring;
@@ -564,6 +571,30 @@ class Program
 				std::cout << "Transport Emission: " << pair.second.transport_emission << "kg" << std::endl;
 				std::cout << "Waste Emission: " << pair.second.waste_emission << "kg" << std::endl;
 			}
+			break;
+		case 3:
+			sqlite3_stmt* stmt;
+			sql = "DElETE FROM carbondata WHERE date = ?";
+			rc = sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
+			if (rc != SQLITE_OK) {
+				std::cerr << "SQL error: " << sqlite3_errmsg(db) << std::endl;
+			}
+			std::cin >> dataToDelete;
+			rc = sqlite3_bind_text(stmt, 1, dataToDelete.c_str(), -1, NULL);
+			if (rc != SQLITE_OK) {
+				std::cerr << "SQL error: " << sqlite3_errmsg(db) << std::endl;
+			}
+			sqlite3_step(stmt);
+			std::cout << "Deleted Successfully\n";
+			sqlite3_finalize(stmt);
+			break;
+		case 4:
+			sql = "DELETE FROM carbondata";
+			std::cout << "Are you sure you want to delete everything (y/n): ";
+			std::cin >> cinput;
+			if (tolower(cinput) == 'y')
+				Execute(db, sql, zErrMsg);
+			break;
 		default:
 			break;
 		}
@@ -647,7 +678,6 @@ public:
 
 int main()
 {
-	system("COLOR 2F");
 	Program program;
 	while (true)
 	{
