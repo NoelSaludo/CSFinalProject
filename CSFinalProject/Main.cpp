@@ -188,7 +188,7 @@ class Program
 		if (data.vehicletype[0] == 'G') {
 			suggestion += "- Consider using an electric or hybrid vehicle for reduced emissions. if not, use bicycle\n\n";
 			suggestion += "- Opt for efficient driving techniques like maintaining a steady speed and reducing idling time.\n\n";
-			suggestion += "- Keep your vehicle well-tuned will minimise its environmental impact by reducing running costs and extending the vehicle’s life.\n\n";
+			suggestion += "- Keep your vehicle well-tuned will minimize its environmental impact by reducing running costs and extending the vehicle’s life.\n\n";
 			suggestion += "- Plan and combine errands to reduce the number of trips made.\n\n";
 			suggestion += "- Look after your tyres, good tyres can reduce fuel consumption.\n\n";
 			links += " https://www.greenvehicleguide.gov.au/pages/UnderstandingEmissions/TipsToReduceYourEmissions \n\n";
@@ -258,15 +258,15 @@ class Program
 
 				"This can reduce your energy use by 10% and reduce your emission by 200kg per year. You can rely on curtains, fans, or natural "
 
-				"ventilation to cool your home instead of using AC.---\n\n---Switch your appliances such as AC, refirgerators, and washing machine to inverter appliances "
+				"ventilation to cool your home instead of using AC.---\n\n---Switch your appliances such as AC, refrigerators, and washing machine to inverter appliances "
 
 				". Inverter appliances use less electricity than their normal counter parts and produce less heat. Inverter appliances can help you reduce energy consumption "
 
-				"by 50% and reduce your CO2 emission by 1200kg per year---\n\n""---if you are currently using on any incandescent light bulbs we reccomend on replacing them with LED bulbs as "
+				"by 50% and reduce your CO2 emission by 1200kg per year---\n\n""---if you are currently using on any incandescent light bulbs we recommend on replacing them with LED bulbs as "
 
 				"as LED bulbs are 85% more efficient than an incandescent bulbs. By doing so you can reduce your CO2 emissions by 500kg"
 
-				" per year.---\n\n---Use a power strip, a smart plug, or unplug unsused devices. Phantom energy loss accounts about 10% of your household electricity "
+				" per year.---\n\n---Use a power strip, a smart plug, or unplug unused devices. Phantom energy loss accounts about 10% of your household electricity "
 
 				"use. Phantom loss is the energy loss in devices that is still plugged in even though the devices are powered off. By using smart plugs "
 
@@ -278,7 +278,7 @@ class Program
 		if (data.energy_emission < philippineaverage * .7) {
 			Suggestion += "---Installing solar panels around your power your home can reduce your energy consumption therefore your carbon emission. "
 
-				"We suggest to use CBH Solar Light as it offers 120 degrees of ilumination adn 2600 lumens of brghtness and it can also provide "
+				"We suggest to use CBH Solar Light as it offers 120 degrees of illumination adn 2600 lumen's of brightness and it can also provide "
 
 				"as it can provide 10 hours of light. Using renewable resources can really help you reduce your carbon emission.---\n\n";//1 suggestion
 
@@ -418,21 +418,21 @@ class Program
 			"ventilation to cool your home instead of using AC.---\n\n"
 
 			" https://www.moneymax.ph/lifestyle/articles/home-energy-saving-tips \n\n";
-		std::cout << "---Switch your appliances such as AC, refirgerators, and washing machine to inverter appliances "
+		std::cout << "---Switch your appliances such as AC, refrigerators, and washing machine to inverter appliances "
 
 			". Inverter appliances use less electricity than their normal counter parts and produce less heat. Inverter appliances can help you reduce energy consumption "
 
 			"by 50% and reduce your CO2 emission by 1200kg per year---\n\n"
 
 			"https://www.metrobank.com.ph/articles/learn/how-to-save-on-electrical-bills \n\n";
-		std::cout << "---if you are currently using on any incandescent light bulbs we reccomend on replacing them with LED bulbs as "
+		std::cout << "---if you are currently using on any incandescent light bulbs we recommend on replacing them with LED bulbs as "
 
 			"as LED bulbs are 85% more efficient than an incandescent bulbs. By doing so you can reduce your CO2 emissions by 500kg"
 
 			" per year.---\n\n"
 
 			"https://www.metrobank.com.ph/articles/learn/how-to-save-on-electrical-bills \n\n";
-		std::cout << "---Use a power strip, a smart plug, or unplug unsused devices. Phantom energy loss accounts about 10% of your household electricity "
+		std::cout << "---Use a power strip, a smart plug, or unplug unused devices. Phantom energy loss accounts about 10% of your household electricity "
 
 			"use. Phantom loss is the energy loss in devices that is still plugged in even though the devices are powered off. By using smart plugs "
 
@@ -441,7 +441,7 @@ class Program
 			"https://www.metrobank.com.ph/articles/learn/how-to-save-on-electrical-bills \n\n";
 		std::cout << "---Installing solar panels around your power your home can reduce your energy consumption therefore your carbon emission. "
 
-			"We suggest to use CBH Solar Light as it offers 120 degrees of ilumination adn 2600 lumens of brghtness and it can also provide "
+			"We suggest to use CBH Solar Light as it offers 120 degrees of illumination adn 2600 lumen of brightness and it can also provide "
 
 			"as it can provide 10 hours of light. Using renewable resources can really help you reduce your carbon emission.---\n\n";
 	}
@@ -451,24 +451,24 @@ class Program
 		std::cout << "We reccomend for gas car to do the following: \n";
 		std::cout << "- Consider using an electric or hybrid vehicle for reduced emissions. if not, use bicycle\n\n";
 		std::cout << "- Opt for efficient driving techniques like maintaining a steady speed and reducing idling time.\n\n";
-		std::cout << "- Keep your vehicle well-tuned will minimise its environmental impact by reducing running costs and extending the vehicle’s life.\n\n";
+		std::cout << "- Keep your vehicle well-tuned will minimize its environmental impact by reducing running costs and extending the vehicle’s life.\n\n";
 		std::cout << "- Plan and combine errands to reduce the number of trips made.\n\n";
 		std::cout << "- Look after your tyres, good tyres can reduce fuel consumption.\n\n";
 		std::cout << " https://www.greenvehicleguide.gov.au/pages/UnderstandingEmissions/TipsToReduceYourEmissions \n\n";
-		std::cout << "We reccomend for diesel car to do the following: \n";
+		std::cout << "We recommend for diesel car to do the following: \n";
 		std::cout << "- Use synthetic or quality diesel or biodiesel for lower emissions.\n\n";
 		std::cout << "- Ensure regular maintenance and tune-ups to optimize fuel efficiency.\n\n";
 		std::cout << "- Optimize combustion process .\n\n";
 		std::cout << "- Reduce unnecessary weight in your vehicle to improve fuel economy.\n\n";
-		std::cout << "- Use aftertreatment systems to treat the exhaust gas after it leaves the engine. \n\n";
+		std::cout << "- Use after treatment systems to treat the exhaust gas after it leaves the engine. \n\n";
 		std::cout << " https://www.linkedin.com/advice/0/how-can-you-reduce-diesel-engine-emissions#:~:text=To%20reduce%20diesel%20engine%20emissions%2C%20you%20should%20use%20fuel%20that,fuel%20properly%20to%20prevent%20degradation. \n\n";
-		std::cout << "We reccomend for diesel jeep to do the following: \n";
+		std::cout << "We recommend for diesel jeep to do the following: \n";
 		std::cout << "- Encourage efficient driving habits among drivers to conserve fuel.\n\n";
 		std::cout << "- Regularly service and maintain the engine to improve efficiency.\n\n";
 		std::cout << "- Consider replacing older vehicles with newer, more fuel-efficient models.\n\n";
 		std::cout << "- Opt for routes with less traffic to minimize fuel consumption.\n\n";
 		std::cout << "- Promote the use of alternative transportation for non-essential trips.\n\n";
-		std::cout << "We reccomend for diesel bus to do the following: \n";
+		std::cout << "We recommend for diesel bus to do the following: \n";
 		std::cout << "- Optimize bus routes to minimize travel time and fuel consumption.\n\n";
 		std::cout << "- Promote the use of hybrid or electric buses in the fleet.\n\n";
 		std::cout << "- Encourage the use of public transportation by providing incentives.\n\n";
@@ -494,7 +494,7 @@ class Program
 		int input;
 		std::cout << "All recommendation to reduce carbon emission and lower carbon footprint\n";
 		std::cout << "1.)Energy\n2.)Transport\n3.)Waste\n";
-		std::cout << "Enter a number to access a specified reccomendation: ";
+		std::cout << "Enter a number to access a specified recommendation: ";
 		std::cin >> input;
 
 		switch (input)
@@ -565,7 +565,7 @@ class Program
 		case 2:
 			for (const auto& pair : carbondata)
 			{
-				std::cout << "Date: " << pair.first << std::endl << "Total Emision: " << pair.second.totalemission << "kg" << std::endl;
+				std::cout << "Date: " << pair.first << std::endl << "Total Emission: " << pair.second.totalemission << "kg" << std::endl;
 				std::cout << "Energy Emission: " << pair.second.energy_emission << "kg" << std::endl;
 				std::cout << "Vehicle Type: " << pair.second.vehicletype << std::endl;
 				std::cout << "Transport Emission: " << pair.second.transport_emission << "kg" << std::endl;
