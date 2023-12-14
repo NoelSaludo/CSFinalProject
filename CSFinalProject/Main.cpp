@@ -7,7 +7,7 @@ class CarbonData
 		std::time_t currentTime = std::chrono::system_clock::to_time_t(now);
 		std::tm localTime = {};
 		if (localtime_s(&localTime, &currentTime) != 0) {
-			std::cerr << "Failed to get local time" << std::endl;
+			std::cerr << "Failed to get local time" << "\n";
 			return "";
 		}
 
@@ -45,16 +45,16 @@ class Program
 	static int callback(void* data, int argc, char** argv, char** azColName) {
 		int i;
 		for (i = 0; i < argc; i++) {
-			std::cout << azColName[i] << " = " << (argv[i] ? argv[i] : "NULL") << std::endl;
+			std::cout << azColName[i] << " = " << (argv[i] ? argv[i] : "NULL") << "\n";
 		}
-		std::cout << std::endl;
+		std::cout << "\n";
 		return 0;
 	}
 
 	void Execute(sqlite3* db, const char* sql, char* zErrMsg) {
 		int rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
 		if (rc != SQLITE_OK) {
-			std::cerr << "SQL error: " << zErrMsg << std::endl;
+			std::cerr << "SQL error: " << zErrMsg << "\n";
 			sqlite3_free(zErrMsg);
 		}
 	}
@@ -136,14 +136,15 @@ class Program
 			data.vehicletype = "DieselBus";
 			break;
 		default:
-			std::cout << "Invalid vehicle type. Please enter G, D, J, or B." << std::endl;
+			std::cout << "Invalid vehicle type. Please enter G, D, J, or B." << "\n";
 			goto CarType;
 			break;
 		}
 		data.transport_emission = dailyEmissions;
 	}
 
-	void CalculateWasteEmission(CarbonData& data) {
+	void CalculateWasteEmission(CarbonData& data) 
+	{
 		double fdw, pw, gw, ww, tw, waste,
 			docf, mcf, f, gwp, fd,
 			paper, garden, wood, textile;
@@ -175,9 +176,9 @@ class Program
 
 	void CalculateTotalEmission(CarbonData& data) {
 		data.totalemission = data.energy_emission + data.transport_emission + data.waste_emission;
-		std::cout << "Energy Emisison: " << data.energy_emission << std::endl;
-		std::cout << "Transport Emisison: " << data.transport_emission << std::endl;
-		std::cout << "Waste Emisison: " << data.waste_emission << std::endl;
+		std::cout << "Energy Emisison: " << data.energy_emission << "\n";
+		std::cout << "Transport Emisison: " << data.transport_emission << "\n";
+		std::cout << "Waste Emisison: " << data.waste_emission << "\n";
 		std::cout << "Your total carbon emission this month: " << data.totalemission << "kg of CO2\n";
 	}
 	void suggestionByVehicleType(CarbonData data,std::string& suggestion, std::string& links){
@@ -219,7 +220,7 @@ class Program
 			std::cout << "Your " << ((data.vehicletype[0] == 'G') ? "Gas Car" :
 				((data.vehicletype[0] == 'D') ? "Diesel Car" :
 					((data.vehicletype[0] == 'J') ? "Diesel Jeepney" : "Diesel Bus")))
-				<< " emissions are high. Consider these recommendations to reduce your carbon footprint:" << std::endl;
+				<< " emissions are high. Consider these recommendations to reduce your carbon footprint:" << "\n";
 			suggestionByVehicleType(data, suggestion, links);
 		}
 		else {
@@ -247,7 +248,6 @@ class Program
 			"---Recycle Waste---\n\n"
 		};
 		std::cout << "Suggestion to reduce your monthly carbon emission:\n";
-		std::cout << "In Electricity:\n\n";
 
 		if (data.energy_emission > philippineaverage * .7)
 		{
@@ -281,11 +281,9 @@ class Program
 
 			energylinks += " https://www.doe.gov.ph/energy-efficiency/overview \n";
 		}
-		std::cout << "For Transport: \n\n";
 
 		vehiclesuggestion(data, Suggestion, transportlinks, philippineaverage);
 		
-		std::cout << "For Waste: \n\n";
 
 		if (data.waste_emission > wasteaverage + wasteaverage * .15)
 		{
@@ -304,7 +302,7 @@ class Program
 			Suggestion += "---Maintain this amount of waste and emission and help in implementing the 3Rs---\n\n";//same here
 			wastelinks += "https://archive.epa.gov/climatechange/kids/solutions/actions/waste.html \n";
 		}
-		std::cout << Suggestion << " \n sources \n " << energylinks << std::endl << std::endl << transportlinks << std::endl << std::endl << wastelinks << std::endl;
+		std::cout << Suggestion << " \n sources \n " << energylinks << "\n\n" << transportlinks << "\n\n" << wastelinks << "\n";
 		data.suggestion = Suggestion;
 	}
 
@@ -326,51 +324,51 @@ class Program
 		sql = "INSERT INTO carbondata (energy_emission, transport_emission, waste_emission, total_emission, vehicle_type, suggestions, date) VALUEs ( ?, ?, ?, ?, ?, ?, ?);";
 		rc = sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
 		if (rc != SQLITE_OK) {
-			std::cerr << "SQL error: " << sqlite3_errmsg(db) << std::endl;
+			std::cerr << "SQL error: " << sqlite3_errmsg(db) << "\n";
 			return(-1);
 		}
 		rc = sqlite3_bind_double(stmt, 1, data.energy_emission);
 		if (rc != SQLITE_OK) {
-			std::cerr << "SQL error: " << sqlite3_errmsg(db) << std::endl;
+			std::cerr << "SQL error: " << sqlite3_errmsg(db) << "\n";
 			return(-1);
 		}
 		rc = sqlite3_bind_double(stmt, 2, data.transport_emission);
 		if (rc != SQLITE_OK) {
-			std::cerr << "SQL error: " << sqlite3_errmsg(db) << std::endl;
+			std::cerr << "SQL error: " << sqlite3_errmsg(db) << "\n";
 			return(-1);
 		}
 		rc = sqlite3_bind_double(stmt, 3, data.waste_emission);
 		if (rc != SQLITE_OK) {
-			std::cerr << "SQL error: " << sqlite3_errmsg(db) << std::endl;
+			std::cerr << "SQL error: " << sqlite3_errmsg(db) << "\n";
 			return(-1);
 		}
 		rc = sqlite3_bind_double(stmt, 4, data.totalemission);
 		if (rc != SQLITE_OK) {
-			std::cerr << "SQL error: " << sqlite3_errmsg(db) << std::endl;
+			std::cerr << "SQL error: " << sqlite3_errmsg(db) << "\n";
 			return(-1);
 		}
 		rc = sqlite3_bind_text(stmt, 5, data.vehicletype.c_str(), -1, NULL);
 		if (rc != SQLITE_OK) {
-			std::cerr << "SQL error: " << sqlite3_errmsg(db) << std::endl;
+			std::cerr << "SQL error: " << sqlite3_errmsg(db) << "\n";
 			return(-1);
 		}
 		rc = sqlite3_bind_text(stmt, 6, data.suggestion.c_str(), -1, NULL);
 		if (rc != SQLITE_OK) {
-			std::cerr << "SQL error: " << sqlite3_errmsg(db) << std::endl;
+			std::cerr << "SQL error: " << sqlite3_errmsg(db) << "\n";
 			return(-1);
 		}
 		rc = sqlite3_bind_text(stmt, 7, data.DateTime.c_str(), -1, NULL);
 		if (rc != SQLITE_OK) {
-			std::cerr << "SQL error: " << sqlite3_errmsg(db) << std::endl;
+			std::cerr << "SQL error: " << sqlite3_errmsg(db) << "\n";
 			return(-1);
 		}
 		rc = sqlite3_step(stmt);
 		if (rc != SQLITE_DONE) {
-			std::cerr << "SQL error: " << sqlite3_errmsg(db) << std::endl;
+			std::cerr << "SQL error: " << sqlite3_errmsg(db) << "\n";
 			return(-1);
 		}
 		else {
-			std::cout << "Record inserted successfully" << std::endl;
+			std::cout << "Record inserted successfully" << "\n";
 		}
 		sqlite3_finalize(stmt);
 		system("pause");
@@ -383,7 +381,7 @@ class Program
 		sqlite3_stmt* stmt;
 		int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, NULL);
 		if (rc != SQLITE_OK) {
-			std::cerr << "Error preparing statement: " << sqlite3_errmsg(db) << std::endl;
+			std::cerr << "Error preparing statement: " << sqlite3_errmsg(db) << "\n";
 			return results;
 		}
 		while ((rc = sqlite3_step(stmt)) == SQLITE_ROW) {
@@ -399,7 +397,7 @@ class Program
 			results.insert({ DateTime, cd });
 		}
 		if (rc != SQLITE_DONE) {
-			std::cerr << "Error executing statement: " << sqlite3_errmsg(db) << std::endl;
+			std::cerr << "Error executing statement: " << sqlite3_errmsg(db) << "\n";
 		}
 		sqlite3_finalize(stmt);
 		return results;
@@ -543,11 +541,11 @@ class Program
 			for (const auto& pair : carbondata)
 			{
 				if (pair.first == inputstring) {
-					std::cout << "Date: " << pair.first << std::endl << "Total Emision: " << pair.second.totalemission << "kg" << std::endl;
-					std::cout << "Energy Emission: " << pair.second.energy_emission << "kg" << std::endl;
-					std::cout << "Vehicle Type: " << pair.second.vehicletype << std::endl;
-					std::cout << "Transport Emission: " << pair.second.transport_emission << "kg" << std::endl;
-					std::cout << "Waste Emission: " << pair.second.waste_emission << "kg" << std::endl;
+					std::cout << "Date: " << pair.first << "\n" << "Total Emision: " << pair.second.totalemission << "kg\n";
+					std::cout << "Energy Emission: " << pair.second.energy_emission << "kg\n";
+					std::cout << "Vehicle Type: " << pair.second.vehicletype << "\n";
+					std::cout << "Transport Emission: " << pair.second.transport_emission << "kg\n";
+					std::cout << "Waste Emission: " << pair.second.waste_emission << "kg\n";
 					continue;
 				}
 				std::cout << "\n";
@@ -562,11 +560,11 @@ class Program
 		case 2:
 			for (const auto& pair : carbondata)
 			{
-				std::cout << "Date: " << pair.first << std::endl << "Total Emission: " << pair.second.totalemission << "kg" << std::endl;
-				std::cout << "Energy Emission: " << pair.second.energy_emission << "kg" << std::endl;
-				std::cout << "Vehicle Type: " << pair.second.vehicletype << std::endl;
-				std::cout << "Transport Emission: " << pair.second.transport_emission << "kg" << std::endl;
-				std::cout << "Waste Emission: " << pair.second.waste_emission << "kg" << std::endl;
+				std::cout << "Date: " << pair.first << "\n" << "Total Emission: " << pair.second.totalemission << "kg\n";
+				std::cout << "Energy Emission: " << pair.second.energy_emission << "kg\n";
+				std::cout << "Vehicle Type: " << pair.second.vehicletype << "\n";
+				std::cout << "Transport Emission: " << pair.second.transport_emission << "kg\n";
+				std::cout << "Waste Emission: " << pair.second.waste_emission << "kg\n";
 			}
 			break;
 		case 3:
@@ -574,12 +572,12 @@ class Program
 			sql = "DElETE FROM carbondata WHERE date = ?";
 			rc = sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
 			if (rc != SQLITE_OK) {
-				std::cerr << "SQL error: " << sqlite3_errmsg(db) << std::endl;
+				std::cerr << "SQL error: " << sqlite3_errmsg(db) << "\n";
 			}
 			std::cin >> dataToDelete;
 			rc = sqlite3_bind_text(stmt, 1, dataToDelete.c_str(), -1, NULL);
 			if (rc != SQLITE_OK) {
-				std::cerr << "SQL error: " << sqlite3_errmsg(db) << std::endl;
+				std::cerr << "SQL error: " << sqlite3_errmsg(db) << "\n";
 			}
 			sqlite3_step(stmt);
 			std::cout << "Deleted Successfully\n";
@@ -601,21 +599,21 @@ class Program
 	void menu(sqlite3* db, CarbonData& data)
 	{
 		unsigned int input;
-		std::cout << char(218);      for (int i = 0; i < 33; i++) { std::cout << char(196); }      std::cout << char(191) << std::endl;
-		std::cout << char(179) << "                                 " << char(179) << std::endl;
-		std::cout << char(179) << "                                 " << char(179) << std::endl;
-		std::cout << char(179) << "   Carbon FootPrint Calculator   " << char(179) << std::endl;
-		std::cout << char(179) << "                                 " << char(179) << std::endl;
-		std::cout << char(179) << "                                 " << char(179) << std::endl;
-		std::cout << char(195);      for (int i = 0; i < 33; i++) { std::cout << char(196); }      std::cout << char(180) << std::endl;
-		std::cout << char(179) << " 1) Enter a new record           " << char(179) << std::endl;
-		std::cout << char(195);      for (int i = 0; i < 33; i++) { std::cout << char(196); }      std::cout << char(180) << std::endl;
-		std::cout << char(179) << " 2) View all records             " << char(179) << std::endl;
-		std::cout << char(195);      for (int i = 0; i < 33; i++) { std::cout << char(196); }      std::cout << char(180) << std::endl;
-		std::cout << char(179) << " 3) View suggestions and sources " << char(179) << std::endl;
-		std::cout << char(195);      for (int i = 0; i < 33; i++) { std::cout << char(196); }      std::cout << char(180) << std::endl;
-		std::cout << char(179) << " 4) Exit                         " << char(179) << std::endl;
-		std::cout << char(192);      for (int i = 0; i < 33; i++) { std::cout << char(196); }      std::cout << char(217) << std::endl;
+		std::cout << char(218);      for (int i = 0; i < 33; i++) { std::cout << char(196); }      std::cout << char(191) << "\n";
+		std::cout << char(179) << "                                 " << char(179) << "\n";
+		std::cout << char(179) << "                                 " << char(179) << "\n";
+		std::cout << char(179) << "   Carbon FootPrint Calculator   " << char(179) << "\n";
+		std::cout << char(179) << "                                 " << char(179) << "\n";
+		std::cout << char(179) << "                                 " << char(179) << "\n";
+		std::cout << char(195);      for (int i = 0; i < 33; i++) { std::cout << char(196); }      std::cout << char(180) << "\n";
+		std::cout << char(179) << " 1) Enter a new record           " << char(179) << "\n";
+		std::cout << char(195);      for (int i = 0; i < 33; i++) { std::cout << char(196); }      std::cout << char(180) << "\n";
+		std::cout << char(179) << " 2) View all records             " << char(179) << "\n";
+		std::cout << char(195);      for (int i = 0; i < 33; i++) { std::cout << char(196); }      std::cout << char(180) << "\n";
+		std::cout << char(179) << " 3) View suggestions and sources " << char(179) << "\n";
+		std::cout << char(195);      for (int i = 0; i < 33; i++) { std::cout << char(196); }      std::cout << char(180) << "\n";
+		std::cout << char(179) << " 4) Exit                         " << char(179) << "\n";
+		std::cout << char(192);      for (int i = 0; i < 33; i++) { std::cout << char(196); }      std::cout << char(217) << "\n";
 		std::cout << "Enter your option: ";
 		std::cin >> input;
 		switch (input)
@@ -651,7 +649,7 @@ public:
 
 		//do not touch please
 		if (rc) {
-			std::cerr << "Can't open database: " << sqlite3_errmsg(db) << std::endl;
+			std::cerr << "Can't open database: " << sqlite3_errmsg(db) << "\n";
 			return (0);
 		}
 		sql = "CREATE TABLE IF NOT EXISTS carbondata(" \
