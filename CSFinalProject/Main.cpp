@@ -38,7 +38,7 @@ public:
 		vehicletype = veh;
 		suggestion = sug;
 	}
-};//yaan mo muna
+};
 
 class Program
 {
@@ -67,7 +67,7 @@ class Program
 		data.DateTime = tmBuff;
 	}
 
-	double calculateDailyEmissions(double time, double averageSpeed, double emissionsFactor[]) {
+	double calculateVehicleEmission(double time, double averageSpeed, double emissionsFactor[]) {
 		double distance = time * averageSpeed;
 
 		if (averageSpeed < 10.0) {
@@ -84,19 +84,20 @@ class Program
 	void CalculateEnergyEmission(CarbonData& data)
 	{
 		double KWH;
+		double carbonFactor = 0.6032;
 		std::cout << "Calculating emission by electricity consumption\n";
 		std::cout << "Please check your Electricity Bill and find KWH used\nEnter KWH : ";
 		std::cin >> KWH;
-		KWH = KWH * 0.6032;
+		KWH = KWH * carbonFactor;
 		data.energy_emission = KWH;
 	}
 
-	void CalculateTransportEmission(CarbonData& data) {
+	void CalculateTransportEmission(CarbonData& data)
+	{
 		const double gasCarSpeed = 29.9;
 		const double dieselCarSpeed = 29.9;
 		const double dieselJeepneySpeed = 17.57;
 		const double dieselBusSpeed = 14.18;
-		//double daysOfTravelPerMonth;
 
 		double gasCarEmissions[] = { 58.1, 49.5, 39.4 };
 		double dieselCarEmissions[] = { 3.0, 2.5, 2.3 };
@@ -105,13 +106,6 @@ class Program
 
 		double timeOfTravel;
 		char vehicleType;
-		/*start:
-		std::cout << "How many times do you go to work, school, or out in a week?\n";
-		std::cin >> daysOfTravelPerMonth;
-		if (daysOfTravelPerMonth > 7) {
-			std::cout << "please enter a number between 1 and 7\n";
-			goto start;*/
-			//}
 		std::cout << "Calculating emission using transportation\n";
 		std::cout << "How long does the travel take in minutes? ";
 		std::cin >> timeOfTravel;
@@ -123,25 +117,28 @@ class Program
 
 		double dailyEmissions = 0;
 		timeOfTravel /= 60;
-		if (vehicleType == 'G') {
-			dailyEmissions = calculateDailyEmissions(timeOfTravel, gasCarSpeed, gasCarEmissions);
+		switch (vehicleType)
+		{
+		case 'G':
+			dailyEmissions = calculateVehicleEmission(timeOfTravel, gasCarSpeed, gasCarEmissions);
 			data.vehicletype = "GasCar";
-		}
-		else if (vehicleType == 'D') {
-			dailyEmissions = calculateDailyEmissions(timeOfTravel, dieselCarSpeed, dieselCarEmissions);
+			break;
+		case 'D':
+			dailyEmissions = calculateVehicleEmission(timeOfTravel, dieselCarSpeed, dieselCarEmissions);
 			data.vehicletype = "DieselCar";
-		}
-		else if (vehicleType == 'J') {
-			dailyEmissions = calculateDailyEmissions(timeOfTravel, dieselJeepneySpeed, dieselJeepneyEmissions);
+			break;
+		case 'J':
+			dailyEmissions = calculateVehicleEmission(timeOfTravel, dieselJeepneySpeed, dieselJeepneyEmissions);
 			data.vehicletype = "DieselJeep";
-		}
-		else if (vehicleType == 'B') {
-			dailyEmissions = calculateDailyEmissions(timeOfTravel, dieselBusSpeed, dieselBusEmissions);
+			break;
+		case 'B':
+			dailyEmissions = calculateVehicleEmission(timeOfTravel, dieselBusSpeed, dieselBusEmissions);
 			data.vehicletype = "DieselBus";
-		}
-		else {
+			break;
+		default:
 			std::cout << "Invalid vehicle type. Please enter G, D, J, or B." << std::endl;
 			goto CarType;
+			break;
 		}
 		data.transport_emission = dailyEmissions;
 	}
@@ -233,7 +230,7 @@ class Program
 		for (int i = 0; i < 3; i++) {
 			int randomIndex = rand() % n;
 			suggestions += arr[randomIndex];
-		}
+		} 
 	}
 	void SuggestionFunction(CarbonData& data)
 	{
