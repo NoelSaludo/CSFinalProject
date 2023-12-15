@@ -512,7 +512,6 @@ class Program
 	}
 	void Statistic(sqlite3* db, CarbonData& data)
 	{
-	Pick: 
 		int rc;
 		const char* sql;
 		char* zErrMsg = 0;
@@ -648,7 +647,6 @@ public:
 
 		rc = sqlite3_open("calculator.db", &db);
 
-		//do not touch please
 		if (rc) {
 			std::cerr << "Can't open database: " << sqlite3_errmsg(db) << "\n";
 			return (0);
